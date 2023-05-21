@@ -5,16 +5,16 @@ import { Collection } from 'discord.js'
 
 
 module.exports = (client: client) => {
+    // @ts-ignore
+    client.commandArray = []
+    // @ts-ignore
+    client.commandlist = new Collection()
 
     //load commands
     const commands = readdirSync(join(__dirname, "../commands"))
     commands.forEach(e => {
         console.log(e) // => ['ping.ts']
         const cmd: Icommands = require(join(__dirname, "../commands/" + e))
-        // @ts-ignore
-        client.commandArray = []
-        // @ts-ignore
-        client.commandlist = new Collection()
         // @ts-ignore
         client.commandlist.set(cmd.data.name, cmd)
         // @ts-ignore
