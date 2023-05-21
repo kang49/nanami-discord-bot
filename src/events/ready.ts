@@ -21,7 +21,7 @@ export = (client: client) => {
 
     client.once("ready", c => {
         updateStatus();
-        setInterval(updateStatus, 60000); // Update status every 1 minute
+        setInterval(updateStatus, 5000); // Update status every 5sec 
 
         console.log(`Ready! Logged in as ${c.user.tag}`);
         client.guilds.cache.forEach(async (guild) => {
