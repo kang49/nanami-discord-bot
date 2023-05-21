@@ -8,6 +8,7 @@ lerna-debug.log*
 .pnpm-debug.log*
 package-lock.json
 pnpm-lock.yaml
+yarn.lock
 
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
@@ -128,6 +129,10 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+#MacOS
 .DS_Store
-yarn.lock
+__MACOSX
+
+#Author
 src/sample export.js
