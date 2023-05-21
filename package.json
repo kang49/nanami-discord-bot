@@ -1,16 +1,22 @@
 {
   "dependencies": {
     "@(-.-)/env": "0.3.2",
+    "@prisma/client": "4.14.1",
     "discord.js": "^14.11.0",
-    "dotenv": "^16.0.3",
-    "pnpm": "^8.5.1"
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
+    "@types/node": "^20.2.1",
+    "prisma": "^4.14.1",
+    "rimraf": "5.0.1",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   },
-  "engines": {
-    "node": "^16.13 || ^18.12",
-    "pnpm": ">=8"
+  "main": "./dist",
+  "scripts": {
+    "dev": "tsc && node ."
   },
-  "packageManager": "pnpm@8.5.1"
+  "engines": {
+    "node": "^16.13 || ^18.12"
+  }
 }
