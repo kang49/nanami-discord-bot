@@ -8,7 +8,6 @@ module.exports = (client: client) => {
         client.guilds.cache.map(g => g).forEach(async (guild) => {
             try {
                 guild.commands.cache.map(command => guild.commands.delete(command.id))
-                // @ts-ignore
                 guild.commands?.set(client.commandArray)
             } catch (e) {
                 console.log((e))

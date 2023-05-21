@@ -50,7 +50,6 @@ module.exports = {
         }
 
         // เขียน db
-        // @ts-ignore
         await prisma.guild.upsert({
             update: {
                 log_id: interaction.channelId,

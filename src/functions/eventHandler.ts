@@ -5,9 +5,7 @@ import { Collection } from 'discord.js'
 
 
 module.exports = (client: client) => {
-    // @ts-ignore
     client.commandArray = []
-    // @ts-ignore
     client.commandlist = new Collection()
 
     //load commands
@@ -15,9 +13,7 @@ module.exports = (client: client) => {
     commands.forEach(e => {
         console.log(e) // => ['ping.ts']
         const cmd: Icommands = require(join(__dirname, "../commands/" + e))
-        // @ts-ignore
         client.commandlist.set(cmd.data.name, cmd)
-        // @ts-ignore
         client.commandArray.push((cmd.data).toJSON())
     })
 
@@ -31,6 +27,7 @@ module.exports = (client: client) => {
 
 export interface Icommands {
     data: {
+        toJSON(): import("discord.js").ApplicationCommandDataResolvable
         name: string
     },
     execute: () => void
