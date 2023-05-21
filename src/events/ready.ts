@@ -3,7 +3,7 @@ import type client from '../index'
 
 export = (client: client) => {
     client.once("ready", c => {
-        client.user?.setPresence({ activities: [{ name: `hello world` }] }) //Set status
+        client.user?.setPresence({ activities: [{ name: `ชื่อนานามินะคะ💕` }] }) //Set status
         console.log(`Ready! Logged in as ${c.user.tag}`);
         client.guilds.cache.map(g => g).forEach(async (guild) => {
             try {
