@@ -34,7 +34,7 @@ export = (client: client) => {
                             url: `${user?.displayAvatarURL()}`,
                         },
                         color: 0x2CE51F,
-                        title: '***✅ Member joined***',
+                        title: '✅ ***Member joined***',
                         description: `**${user?.displayName}** joined **${newState.channel?.name}**`,
                         timestamp: new Date().toISOString(),
                     }
@@ -56,7 +56,7 @@ export = (client: client) => {
                             url: `${user?.displayAvatarURL()}`,
                         },
                         color: 0xB6B6B6,
-                        title: '***⭕️ Member left***',
+                        title: '⭕️ ***Member left***',
                         description: `**${user?.displayName}** left **${oldState.channel?.name}**`,
                         timestamp: new Date().toISOString(),
                     }
@@ -78,7 +78,7 @@ export = (client: client) => {
                             url: `${user?.displayAvatarURL()}`,
                         },
                         color: 0xFFC200,
-                        title: '***🔄 Member moved***',
+                        title: '🔄 ***Member moved***',
                         description: `**${user?.displayName}** moved from **${oldState.channel?.name}** to **${newState.channel?.name}**`,
                         timestamp: new Date().toISOString(),
                     }

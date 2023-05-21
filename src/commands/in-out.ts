@@ -47,7 +47,7 @@ export = {
                 embeds: [
                     {
                         color: 0xE51F33,
-                        description: `🔴 Cancle in-out report ที่ห้องไอดี: ${interaction.channelId} สำเร็จ`
+                        description: `🔴 **Cancle in-out report** ที่ห้องไอดี: **${interaction.channelId}** สำเร็จ`
                     }
                 ]
             })
@@ -87,7 +87,9 @@ export = {
             embeds: [
                 {
                     color: 0x0099ff,
-                    description: `🟢 Setup in-out report ที่ห้องไอดี: ${interaction.channelId} สำเร็จ`
+                    description: `🟢 **Setup in-out report** ที่ห้องไอดี: **${interaction.channelId}** สำเร็จ
+                    
+                    ⚠️ **หมายเหตุ:** ถ้า Setup แล้วใช้ไม่ได้ให้ Setup ซ้ำอีกรอบ`
                 }
             ]
         })
