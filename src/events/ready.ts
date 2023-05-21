@@ -1,16 +1,35 @@
-import { Events } from 'discord.js'
-import type client from '../index'
+import { Events } from 'discord.js';
+import type client from '../index';
+
+const statusList = [
+    { name: 'ชื่อนานามินะคะ 💕' },
+    { name: 'ลองเรียกใช้หนูได้นะคะ' },
+    { name: 'อยากโดนเธอจังค่ะ อ้าาส์ 💘' }
+    // Add more status messages as needed
+];
 
 export = (client: client) => {
+    let currentStatusIndex = 0;
+
+    function updateStatus() {
+        const status = statusList[currentStatusIndex];
+        client.user?.setPresence({
+            activities: [status]
+        });
+        currentStatusIndex = (currentStatusIndex + 1) % statusList.length;
+    }
+
     client.once("ready", c => {
-        client.user?.setPresence({ activities: [{ name: `ชื่อนานามินะคะ💕` }] }) //Set status
+        updateStatus();
+        setInterval(updateStatus, 60000); // Update status every 1 minute
+
         console.log(`Ready! Logged in as ${c.user.tag}`);
-        client.guilds.cache.map(g => g).forEach(async (guild) => {
+        client.guilds.cache.forEach(async (guild) => {
             try {
-                guild.commands.cache.map(command => guild.commands.delete(command.id))
-                guild.commands?.set(client.commandArray)
+                guild.commands.cache.forEach(command => guild.commands.delete(command.id));
+                guild.commands?.set(client.commandArray);
             } catch (e) {
-                console.log((e))
+                console.log(e);
             }
         });
     });
