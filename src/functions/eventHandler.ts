@@ -2,9 +2,9 @@ import { readFileSync, readdirSync } from 'fs'
 import { join } from 'path'
 import type client from '../index'
 import { Collection } from 'discord.js'
+import type { ApplicationCommandDataResolvable } from 'discord.js'
 
-
-module.exports = (client: client) => {
+export = (client: client) => {
     client.commandArray = []
     client.commandlist = new Collection()
 
@@ -14,7 +14,7 @@ module.exports = (client: client) => {
         console.log(e) // => ['ping.ts']
         const cmd: Icommands = require(join(__dirname, "../commands/" + e))
         client.commandlist.set(cmd.data.name, cmd)
-        client.commandArray.push((cmd.data).toJSON())
+        client.commandArray.push(cmd.data)
     })
 
     //load event
@@ -25,10 +25,7 @@ module.exports = (client: client) => {
     })
 }
 
-export interface Icommands {
-    data: {
-        toJSON(): import("discord.js").ApplicationCommandDataResolvable
-        name: string
-    },
+interface Icommands {
+    data: any,
     execute: () => void
 }

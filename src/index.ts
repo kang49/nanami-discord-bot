@@ -1,7 +1,6 @@
 // Require the necessary discord.js classes
 import { Client, Collection, ApplicationCommandDataResolvable } from 'discord.js';
 require('dotenv').config()
-
 export default class client extends Client {
 
 	public commandlist: Dictionary = new Collection()

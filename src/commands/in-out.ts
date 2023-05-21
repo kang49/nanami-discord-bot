@@ -1,34 +1,42 @@
-import { SlashCommandBuilder } from "discord.js";
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
+import type client from '../index'
+import type { CommandInteraction } from "discord.js"
 
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('in-out')
-        .setDescription("Report user in and out voice chat in server")
-
-        //เพิ่ม args 
-        .addStringOption(o =>
-            o.setName('setup')
-                .setDescription("ตั้งค่าห้องนี้เป็นห้องเก็บ LOGS หรือไม่?")
-                .setRequired(true) //บังคับว่าต้องกรอก
-
-                //เพิ่ม ตัวเลือก
-                .addChoices(
-                    { name: 'yes', value: 'yes' },
-                    { name: 'cancel', value: 'cancel' },
-                ))
-        .setDescriptionLocalizations({
-            th: 'รีพอร์ตการเข้าออก Voice Chat',
-        }),
-    async execute(client: any, interaction: any) {
-        const _setup = interaction.options.getString('setup') //ดึงค่าของ args
+export = {
+    data: {
+        name: "in-out",
+        description: "Report user in and out voice chat in server",
+        description_localizations: {
+            'th': 'รีพอร์ตการเข้าออก Voice Chat'
+        },
+        options: [
+            {
+                name: "setup",
+                description: "ตั้งค่าห้องนี้เป็นห้องเก็บ LOGS หรือไม่?",
+                type: 3,
+                required: true,
+                choices: [
+                    {
+                        name: "yes",
+                        value: "yes"
+                    },
+                    {
+                        name: "cancel",
+                        value: "cancel"
+                    }
+                ]
+            }
+        ]
+    },
+    async execute(client: client, interaction: CommandInteraction) {
+        const _setup = interaction.options.get('setup')?.value //ดึงค่าของ args
         if (_setup != "yes") {
             await interaction.reply({
                 embeds: [
                     {
                         color: 0xE51F33,
-                        description: `Cancle in-out report ที่ห้องไอดี: ${interaction.channelId} สำเร็จ`
+                        description: `🔴 Cancle in-out report ที่ห้องไอดี: ${interaction.channelId} สำเร็จ`
                     }
                 ]
             })
@@ -39,7 +47,7 @@ module.exports = {
                     inout: false
                 },
                 where: {
-                    guild_id: interaction.guildId
+                    guild_id: interaction.guildId ?? ""
                 },
                 create: {
                     guild_id: interaction.guildId,
@@ -56,7 +64,7 @@ module.exports = {
                 inout: true
             },
             where: {
-                guild_id: interaction.guildId
+                guild_id: interaction.guildId ?? ""
             },
             create: {
                 guild_id: interaction.guildId,
@@ -68,7 +76,7 @@ module.exports = {
             embeds: [
                 {
                     color: 0x0099ff,
-                    description: `Setup in-out report ที่ห้องไอดี: ${interaction.channelId} สำเร็จ`
+                    description: `🟢 Setup in-out report ที่ห้องไอดี: ${interaction.channelId} สำเร็จ`
                 }
             ]
         })

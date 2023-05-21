@@ -1,9 +1,11 @@
-import { SlashCommandBuilder } from "@discordjs/builders"
+import type client from '../index'
 
-module.exports = {
-    data: new SlashCommandBuilder()
-    .setName("ping").setDescription("this is a ping command~!"),
-    async execute(client:any, interaction:any) {
+export = {
+    data: {
+        name: 'ping',
+        description: 'this is a ping command~!'
+    },
+    async execute(client: client, interaction: any) {
         await interaction.reply({ content: `${client.ws.ping}ms` });
     }
 }
