@@ -22,7 +22,7 @@ export = (client: client) => {
             if (!_channel) return;
             if (_channel.type !== ChannelType.GuildText) return;
             const guildName = newState.guild.name;
-            console.log(`[${guildName}][in-out]: ✅ ${user?.displayName} joined voice channel ${newState.channel?.name}`);
+            console.log(`[${guildName}][in-out]: ✅ ${user?.displayName} joined ${newState.channel?.name}`);
             _channel?.send({
                 embeds: [
                     {
@@ -30,8 +30,12 @@ export = (client: client) => {
                             name: `${user?.displayName}`,
                             icon_url: `${user?.displayAvatarURL()}`,
                         },
+                        thumbnail: {
+                            url: `${user?.displayAvatarURL()}`,
+                        },
                         color: 0x2CE51F,
-                        description: `✅ ${user?.displayName} joined voice channel ${newState.channel?.name}`,
+                        title: '***✅ Member joined***',
+                        description: `**${user?.displayName}** joined **${newState.channel?.name}**`,
                         timestamp: new Date().toISOString(),
                     }
                 ]
@@ -40,7 +44,7 @@ export = (client: client) => {
             if (!_channel) return;
             if (_channel.type !== ChannelType.GuildText) return;
             const guildName = newState.guild.name;
-            console.log(`[${guildName}][in-out]: ⭕️ ${user?.displayName} left voice channel ${oldState.channel?.name}`);
+            console.log(`[${guildName}][in-out]: ⭕️ ${user?.displayName} left ${oldState.channel?.name}`);
             _channel.send({
                 embeds: [
                     {
@@ -48,8 +52,12 @@ export = (client: client) => {
                             name: `${user?.displayName}`,
                             icon_url: `${user?.displayAvatarURL()}`,
                         },
+                        thumbnail: {
+                            url: `${user?.displayAvatarURL()}`,
+                        },
                         color: 0xB6B6B6,
-                        description: `⭕️ ${user?.displayName} left voice channel ${oldState.channel?.name}`,
+                        title: '***⭕️ Member left***',
+                        description: `**${user?.displayName}** left **${oldState.channel?.name}**`,
                         timestamp: new Date().toISOString(),
                     }
                 ]
@@ -66,8 +74,12 @@ export = (client: client) => {
                             name: `${user?.displayName}`,
                             icon_url: `${user?.displayAvatarURL()}`,
                         },
+                        thumbnail: {
+                            url: `${user?.displayAvatarURL()}`,
+                        },
                         color: 0xFFC200,
-                        description: `🔄 ${user?.displayName} moved from ${oldState.channel?.name} to ${newState.channel?.name}`,
+                        title: '***🔄 Member moved***',
+                        description: `**${user?.displayName}** moved from **${oldState.channel?.name}** to **${newState.channel?.name}**`,
                         timestamp: new Date().toISOString(),
                     }
                 ]
