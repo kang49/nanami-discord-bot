@@ -15,7 +15,7 @@ export default class client extends Client {
 	}
 
 	async reqevent() {
-		require('./events')(this)
+		require('./functions/eventHandler')(this)
 		return true
 	}
 }

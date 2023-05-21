@@ -1,4 +1,4 @@
-import type client from '../../index'
+import type client from '../index'
 
 
 module.exports = (client: client) => {
