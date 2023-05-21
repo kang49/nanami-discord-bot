@@ -26,7 +26,7 @@ export = (client: client) => {
                     {
                         author: {
                             name: `${user?.displayName}`,
-                            icon_url: 'https://i.imgur.com/AfFp7pu.pnghttps://static.vecteezy.com/system/resources/previews/018/930/718/original/discord-logo-discord-icon-transparent-free-png.png',
+                            icon_url: `${user?.displayAvatarURL()}`,
                         },
                         color: 0x2CE51F,
                         description: `✅ ${user?.displayName} join voice channel ${newState.channel?.name}`
