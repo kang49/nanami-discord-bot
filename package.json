@@ -5,6 +5,7 @@
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3"
   },
+  
   "devDependencies": {
     "@types/node": "^20.2.1",
     "prisma": "^4.14.1",
@@ -14,7 +15,9 @@
   },
   "main": "./dist",
   "scripts": {
-    "dev": "tsc && node ."
+    "dev": "tsc && node .",
+    "start": "node dist/index.js",
+    "build": "tsc"
   },
   "engines": {
     "node": "^16.13 || ^18.12"
