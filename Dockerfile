@@ -40,7 +40,7 @@ RUN npx prisma generate
 
 FROM node:18-alpine as runner
 
-LABEL name "nanamis-discord-bot"
+LABEL name "nanami-discord-bot"
 
 USER node
 ENV NODE_ENV production
