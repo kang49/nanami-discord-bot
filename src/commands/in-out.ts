@@ -30,6 +30,19 @@ export = {
         ]
     },
     async execute(client: client, interaction: CommandInteraction) {
+        //เช็ค Role Admin
+        const roles = (!interaction.member as any)._roles as string[];
+        const result = await Promise.all(roles.map(roleId => interaction.guild?.roles.fetch(roleId)));
+        if (interaction.memberPermissions?.has('Administrator')) return interaction.reply({ 
+            embeds: [
+                {
+                    color: 0xE6ED20,
+                    description: `⚠️ You are not permission to use this command ⚠️`
+                }
+            ]
+         });
+
+
         const _setup = interaction.options.get('setup')?.value //ดึงค่าของ args
         if (_setup != "yes") {
             await interaction.reply({
