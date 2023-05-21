@@ -31,7 +31,6 @@ export = {
     },
     async execute(client: client, interaction: CommandInteraction) {
         //เช็ค Role Admin
-        console.log(interaction);
         if (!interaction.memberPermissions?.has('Administrator')) return interaction.reply({ 
             embeds: [
                 {
