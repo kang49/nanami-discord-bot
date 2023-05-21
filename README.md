@@ -24,6 +24,12 @@
   ```bash
   npm run dev
   ```
+  
+ - To kill node process
+    ```
+    pgrep -l node
+    pkill node
+    ```
 
 ## Deploy
 
