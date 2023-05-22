@@ -113,6 +113,26 @@ export = (client: client) => {
                     },
                 });             
             }
+            // Delete newVoiceState
+            //@ts-ignore
+            if (_new_create_Vstate_ids.includes(oldState.channelId)) {
+                //@ts-ignore
+                const voiceChannel = _guild.channels.cache.get(oldState.channelId);
+                if (voiceChannel && voiceChannel.type === ChannelType.GuildVoice) {
+                    const memberCount = voiceChannel.members.size;
+                    //Check member still in new voice channel
+                    if (memberCount === 0) {
+                        voiceChannel.delete();
+                        //@ts-ignore
+                        await prisma.voiceChatClone.deleteMany({
+                            where: {
+                                new_create_Vstate_id: `${oldState.channelId}`,
+                            }
+                          });
+                        // console.log(`Voice channel ${_new_create_Vstate_id} has been deleted.`);
+                    }
+                }
+            }
         }
     });
 };
