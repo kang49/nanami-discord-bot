@@ -30,20 +30,10 @@ export = {
                 type: 1,
                 options: [
                     {
-                        "name": "confirm",
-                        "description": "Select target voice channel to clone",
-                        "type": 3,
+                        "name": "voice-channel",
+                        "description": "Select target voice channel to cancel",
+                        "type": 7,
                         required: true,
-                        choices: [
-                            {
-                                name: "yes",
-                                value: "yes"
-                            },
-                            {
-                                name: "no",
-                                value: "no"
-                            }
-                        ]
                     },
                 ]
             }
@@ -56,7 +46,7 @@ export = {
         //@ts-ignore
         const voiceChannelOption = interaction?.options.getChannel('voice-channel'); // Get the voice-channel option value
         //@ts-ignore
-        const confirmOption = interaction?.options.get('confirm')?.value; // Get the confirm option value
+        const confirmOption = interaction?.options.getSubcommand();
         
         // console.log('Setup Option:', setupOption); //setup or cancel
         // console.log('Voice Channel Option:', voiceChannelOption); //voice state data
@@ -75,50 +65,42 @@ export = {
              });
             const _create_Vstate_id: string = voiceChannelOption.id
         
-            //Update create_Vstate_id to sql
-            await prisma.guild.upsert({
-                update: {
-                    //@ts-ignore
-                    create_Vstate_id: _create_Vstate_id,
-                },
-                where: {
-                    guild_id: interaction.guildId ?? ""
-                },
-                create: {
-                    guild_id: interaction.guildId,
-                    //@ts-ignore
-                    create_Vstate_id: _create_Vstate_id
+            //insert create_Vstate_id to sql
+            //@ts-ignore
+            await prisma.voiceChatClone.create({
+                data: {
+                  create_Vstate_id: _create_Vstate_id
                 }
-            })
+            });
             await interaction.reply({
                 embeds: [
                     {
                         color: 0x0099ff,
-                        description: `🟦 **Registed Clone Voice Channel** ที่ห้องไอดี: **${_create_Vstate_id}** เรียบร้อยแล้วเจ้าค่ะ
-                        
-                        ⚠️ **หมายเหตุ:** ฟังก์ชั่นนี้ set clone ได้แค่ 1 voice channel/Server เท่านั้นน้าา`
+                        description: `🟦 **Registed Clone Voice Channel** ที่ห้องไอดี: **${_create_Vstate_id}** เรียบร้อยแล้วเจ้าค่ะ`
                     }
                 ]
             })
         }
-        else if (confirmOption === 'yes') {
-            //Update create_Vstate_id to sql
-            await prisma.guild.upsert({
-                update: {
-                    //@ts-ignore
-                    create_Vstate_id: null,
-                    new_create_Vstate_id: null
-                },
+        else if (confirmOption === 'cancel') {
+            if (!voiceChannelOption || voiceChannelOption.type !== 2) return interaction.reply({ 
+                embeds: [
+                    {
+                        color: 0xE6ED20,
+                        description: `⚠️ นี่ไม่ใช่ **Voice Channel** นี่เจ้าคะ ⚠️
+
+                        ⚠️ This's not **Voice Channel** ⚠️`
+                    }
+                ]
+            });
+            const _create_Vstate_id: string = voiceChannelOption.id
+        
+            //delete all create_Vstate_id match with _create_Vstate_id to sql
+            //@ts-ignore
+            await prisma.voiceChatClone.deleteMany({
                 where: {
-                    guild_id: interaction.guildId ?? ""
-                },
-                create: {
-                    guild_id: interaction.guildId,
-                    //@ts-ignore
-                    create_Vstate_id: null,
-                    new_create_Vstate_id: null
+                  create_Vstate_id: _create_Vstate_id
                 }
-            })
+            });
             await interaction.reply({
                 embeds: [
                     {
