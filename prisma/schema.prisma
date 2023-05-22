@@ -15,5 +15,7 @@ model guild {
   log_id String?
   guild_id String? @unique
   inout Boolean @default(true)
+  create_Vstate_id String?
+  new_create_Vstate_id String?
   create_time DateTime @default(now())
 }
