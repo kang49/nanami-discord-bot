@@ -36,14 +36,106 @@ export = {
                         "required": true,
                         "choices": [
                             {
-                                "name": "en",
-                                "value": "en"
+                              "name": "english",
+                              "value": "en"
                             },
                             {
-                                "name": "th",
-                                "value": "th"
+                              "name": "spanish",
+                              "value": "es"
                             },
-                        ]
+                            {
+                              "name": "mandarin chinese",
+                              "value": "zh-CN"
+                            },
+                            {
+                              "name": "hindi",
+                              "value": "hi"
+                            },
+                            {
+                              "name": "arabic",
+                              "value": "ar"
+                            },
+                            {
+                              "name": "portuguese",
+                              "value": "pt"
+                            },
+                            {
+                              "name": "bengali",
+                              "value": "bn"
+                            },
+                            {
+                              "name": "russian",
+                              "value": "ru"
+                            },
+                            {
+                              "name": "japanese",
+                              "value": "ja"
+                            },
+                            {
+                              "name": "punjabi",
+                              "value": "pa"
+                            },
+                            {
+                              "name": "german",
+                              "value": "de"
+                            },
+                            {
+                              "name": "javanese",
+                              "value": "jv"
+                            },
+                            {
+                              "name": "korean",
+                              "value": "ko"
+                            },
+                            {
+                              "name": "french",
+                              "value": "fr"
+                            },
+                            {
+                              "name": "telugu",
+                              "value": "te"
+                            },
+                            {
+                              "name": "marathi",
+                              "value": "mr"
+                            },
+                            {
+                              "name": "turkish",
+                              "value": "tr"
+                            },
+                            {
+                                "name": "thai",
+                                "value": "th"
+                              },
+                            {
+                              "name": "tamil",
+                              "value": "ta"
+                            },
+                            {
+                              "name": "vietnamese",
+                              "value": "vi"
+                            },
+                            {
+                              "name": "urdu",
+                              "value": "ur"
+                            },
+                            {
+                              "name": "italian",
+                              "value": "it"
+                            },
+                            {
+                              "name": "gujarati",
+                              "value": "gu"
+                            },
+                            {
+                              "name": "polish",
+                              "value": "pl"
+                            },
+                            {
+                              "name": "ukrainian",
+                              "value": "uk"
+                            }
+                          ]                          
                     },
                     {
                         "name": "target-lang",
@@ -52,14 +144,107 @@ export = {
                         "required": true,
                         "choices": [
                             {
-                                "name": "en",
-                                "value": "en"
+                              "name": "english",
+                              "value": "en"
                             },
                             {
-                                "name": "th",
-                                "value": "th"
+                              "name": "spanish",
+                              "value": "es"
                             },
-                        ]
+                            {
+                              "name": "mandarin chinese",
+                              "value": "zh-CN"
+                            },
+                            {
+                              "name": "hindi",
+                              "value": "hi"
+                            },
+                            {
+                              "name": "arabic",
+                              "value": "ar"
+                            },
+                            {
+                              "name": "portuguese",
+                              "value": "pt"
+                            },
+                            {
+                              "name": "bengali",
+                              "value": "bn"
+                            },
+                            {
+                              "name": "russian",
+                              "value": "ru"
+                            },
+                            {
+                              "name": "japanese",
+                              "value": "ja"
+                            },
+                            {
+                              "name": "punjabi",
+                              "value": "pa"
+                            },
+                            {
+                              "name": "german",
+                              "value": "de"
+                            },
+                            {
+                              "name": "javanese",
+                              "value": "jv"
+                            },
+                            {
+                              "name": "korean",
+                              "value": "ko"
+                            },
+                            {
+                              "name": "french",
+                              "value": "fr"
+                            },
+                            {
+                              "name": "telugu",
+                              "value": "te"
+                            },
+                            {
+                              "name": "marathi",
+                              "value": "mr"
+                            },
+                            {
+                              "name": "turkish",
+                              "value": "tr"
+                            },
+                            {
+                                "name": "thai",
+                                "value": "th"
+                              },
+                            {
+                              "name": "tamil",
+                              "value": "ta"
+                            },
+                            {
+                              "name": "vietnamese",
+                              "value": "vi"
+                            },
+                            {
+                              "name": "urdu",
+                              "value": "ur"
+                            },
+                            {
+                              "name": "italian",
+                              "value": "it"
+                            },
+                            {
+                              "name": "gujarati",
+                              "value": "gu"
+                            },
+                            {
+                              "name": "polish",
+                              "value": "pl"
+                            },
+                            {
+                              "name": "ukrainian",
+                              "value": "uk"
+                            }
+                          ]
+                          
                     },
                 ]
                 
@@ -95,7 +280,7 @@ export = {
             if (!mainChannelOption || mainChannelOption.type !== 0) return interaction.reply({
                 embeds: [
                     {
-                        color: 0xE6ED20,
+                        color: 0xFEED01,
                         title: `***Error***`,
                         description: `⚠️ **${mainChannelOption.name}** นี่ไม่ใช่ **Text Channel** นี่เจ้าคะ ⚠️
 
@@ -106,7 +291,7 @@ export = {
             if (!targetChannelOption || targetChannelOption.type !== 0) return interaction.reply({
                 embeds: [
                     {
-                        color: 0xE6ED20,
+                        color: 0xFEED01,
                         title: `***Error***`,
                         description: `⚠️ **${targetChannelOption.name}** นี่ไม่ใช่ **Text Channel** นี่เจ้าคะ ⚠️
 
@@ -132,7 +317,7 @@ export = {
                     {
                         embeds: [
                             {
-                                color: 0xE6ED20,
+                                color: 0xFEED01,
                                 title: `***Error***`,
                                 description: `⚠️ Setup failed **${targetChannelOption.name}** is already set
                                 
@@ -179,7 +364,7 @@ export = {
                     {
                         embeds: [
                             {
-                                color: 0xB6B6B6,
+                                color: 0xFEED01,
                                 title: `⭕️ ***Connection Error***`,
                                 description: `**Database** isn't response please try again later`
                             }
@@ -191,7 +376,7 @@ export = {
                 {
                     embeds: [
                         {
-                            color: 0xB6B6B6,
+                            color: 0xFE0101,
                             title: `⭕️ ***Translate Channel Cancelled***`,
                             description: `Cancelled translate channel **${targetChannelOption.name}**`
                         }
