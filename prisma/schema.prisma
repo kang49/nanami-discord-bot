@@ -26,3 +26,13 @@ model voiceChatClone {
   new_create_Vstate_id String? @unique
   create_time DateTime @default(now())
 }
+
+model translateChannel {
+  id Int @id @default(autoincrement())
+  guild String?
+  mainChannel String?
+  targetChannel String? @unique
+  mainLanguage String?
+  targetLanguage String?
+  create_time DateTime @default(now())
+}
