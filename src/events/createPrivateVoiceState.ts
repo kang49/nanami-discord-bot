@@ -53,12 +53,16 @@ export = (client: client) => {
                 // console.log(`User ${user.displayName} moved to ${newVoiceState.name}`);
 
                 // Insert SQL
-                await prisma.voiceChatClone.create({
-                    data: {
-                        create_Vstate_id: _currentVstateId ?? "",
-                        new_create_Vstate_id: newVoiceState.id,
-                    },
-                });             
+                try{
+                    await prisma.voiceChatClone.create({
+                        data: {
+                            create_Vstate_id: _currentVstateId ?? "",
+                            new_create_Vstate_id: newVoiceState.id,
+                        },
+                    });     
+                } catch {
+                    //nothing
+                }     
             }
 
         } else if (oldState.channelId !== null && newState.channelId === null) {
@@ -73,12 +77,16 @@ export = (client: client) => {
                     //Check member still in new voice channel
                     if (memberCount === 0) {
                         voiceChannel.delete();
+                        try {
                         //@ts-ignore
                         await prisma.voiceChatClone.deleteMany({
                             where: {
                                 new_create_Vstate_id: `${oldState.channelId}`,
                             }
                           });
+                        } catch {
+                            //noting
+                        }
                         // console.log(`Voice channel ${_new_create_Vstate_id} has been deleted.`);
                     }
                 }

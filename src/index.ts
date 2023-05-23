@@ -11,7 +11,8 @@ export default class client extends Client {
 			intents: [
 				'Guilds',
 				'GuildMessages',
-				'GuildVoiceStates'
+				'GuildVoiceStates',
+				'MessageContent'
 			]
 		})
 		this.reqevent()
