@@ -35,6 +35,7 @@ export = {
             embeds: [
                 {
                     color: 0xE6ED20,
+                    title: `***Error***`,
                     description: `⚠️ You are not permission to use this command ⚠️`
                 }
             ]
@@ -52,36 +53,64 @@ export = {
                 ]
             })
 
-            return await prisma.guild.upsert({
+            try {
+                await prisma.guild.upsert({
+                    update: {
+                        log_id: interaction.channelId,
+                        inout: false
+                    },
+                    where: {
+                        guild_id: interaction.guildId ?? ""
+                    },
+                    create: {
+                        guild_id: interaction.guildId,
+                        log_id: interaction.channelId,
+                        inout: false
+                    }
+                })
+            } catch {
+                return interaction.reply(
+                    {
+                        embeds: [
+                            {
+                                color: 0xB6B6B6,
+                                title: `⭕️ ***Connection Error***`,
+                                description: `**Database** isn't response please try again later`
+                            }
+                        ]
+                    }
+                )
+            }
+        }
+
+        // เขียน db
+        try{
+            await prisma.guild.upsert({
                 update: {
                     log_id: interaction.channelId,
-                    inout: false
+                    inout: true
                 },
                 where: {
                     guild_id: interaction.guildId ?? ""
                 },
                 create: {
                     guild_id: interaction.guildId,
-                    log_id: interaction.channelId,
-                    inout: false
+                    log_id: interaction.channelId
                 }
             })
+        } catch {
+            return interaction.reply(
+                {
+                    embeds: [
+                        {
+                            color: 0xB6B6B6,
+                            title: `⭕️ ***Connection Error***`,
+                            description: `**Database** isn't response please try again later`
+                        }
+                    ]
+                }
+            )
         }
-
-        // เขียน db
-        await prisma.guild.upsert({
-            update: {
-                log_id: interaction.channelId,
-                inout: true
-            },
-            where: {
-                guild_id: interaction.guildId ?? ""
-            },
-            create: {
-                guild_id: interaction.guildId,
-                log_id: interaction.channelId
-            }
-        })
 
         await interaction.reply({
             embeds: [

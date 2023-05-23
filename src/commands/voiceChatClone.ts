@@ -57,6 +57,7 @@ export = {
                 embeds: [
                     {
                         color: 0xE6ED20,
+                        title: `***Error***`,
                         description: `⚠️ นี่ไม่ใช่ **Voice Channel** นี่เจ้าคะ ⚠️
 
                         ⚠️ This's not **Voice Channel** ⚠️`
@@ -86,6 +87,7 @@ export = {
                 embeds: [
                     {
                         color: 0xE6ED20,
+                        title: `***Error***`,
                         description: `⚠️ นี่ไม่ใช่ **Voice Channel** นี่เจ้าคะ ⚠️
 
                         ⚠️ This's not **Voice Channel** ⚠️`
