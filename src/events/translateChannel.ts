@@ -62,22 +62,48 @@ export = (client: client) => {
                 const response_microsiftTR = await axios.request(options_microsoftTrAPI);
                 const message_contentTR: string = response_microsiftTR.data[0].translations[0].text;
 
-                translateChannel_mainChannel.send({
-                    embeds: [
-                        {
-                            author: {
-                                name: `${message.author.username}`,
-                                icon_url: `${message.author.avatarURL()}`,
-                            },
-                            color: 0x0099ff,
-                            title: `**${message_contentTR}**`,
-                            timestamp: new Date().toISOString(),
-                            footer: {
-                                text: `Nanami Translate`
+                if (message.content !== '') {
+                    translateChannel_mainChannel.send({
+                        embeds: [
+                            {
+                                author: {
+                                    name: `${message.author.username}`,
+                                    icon_url: `${message.author.avatarURL()}`,
+                                },
+                                color: 0x0099ff,
+                                title: `**${message_contentTR}**`,
+                                timestamp: new Date().toISOString(),
+                                footer: {
+                                    text: `Nanami Translate`
+                                }
                             }
-                        }
-                    ]
-                });
+                        ]
+                    });
+                }
+                else if (message.attachments) {
+                    //@ts-ignore
+                    const attachmentURL = message.attachments.first().url;
+
+                    translateChannel_mainChannel.send({
+                        embeds: [
+                            {
+                                author: {
+                                    name: `${message.author.username}`,
+                                    icon_url: `${message.author.avatarURL()}`,
+                                },
+                                color: 0x0099ff,
+                                image: {
+                                    url: attachmentURL
+                                },
+                                timestamp: new Date().toISOString(),
+                                footer: {
+                                    text: `Nanami Translate`
+                                }
+                            }
+                        ]
+                    });
+                }
+
             } catch (error) {
                 console.error(error);
             }
@@ -122,22 +148,48 @@ export = (client: client) => {
                 const response_microsiftTR = await axios.request(options_microsoftTrAPI);
                 const message_contentTR: string = response_microsiftTR.data[0].translations[0].text;
 
-                translateChannel_targetChannel.send({
-                    embeds: [
-                        {
-                            author: {
-                                name: `${message.author.username}`,
-                                icon_url: `${message.author.avatarURL()}`,
-                            },
-                            color: 0x0099ff,
-                            title: `**${message_contentTR}**`,
-                            timestamp: new Date().toISOString(),
-                            footer: {
-                                text: `Nanami Translate`
+                if (message.content !== '') {
+                    translateChannel_targetChannel.send({
+                        embeds: [
+                            {
+                                author: {
+                                    name: `${message.author.username}`,
+                                    icon_url: `${message.author.avatarURL()}`,
+                                },
+                                color: 0x0099ff,
+                                title: `**${message_contentTR}**`,
+                                timestamp: new Date().toISOString(),
+                                footer: {
+                                    text: `Nanami Translate`
+                                }
                             }
-                        }
-                    ]
-                });
+                        ]
+                    });
+                }
+                else if (message.attachments) {
+                    //@ts-ignore
+                    const attachmentURL = message.attachments.first().url;
+                    
+                    translateChannel_targetChannel.send({
+                        embeds: [
+                            {
+                                author: {
+                                    name: `${message.author.username}`,
+                                    icon_url: `${message.author.avatarURL()}`,
+                                },
+                                color: 0x0099ff,
+                                image: {
+                                    url: attachmentURL
+                                },
+                                timestamp: new Date().toISOString(),
+                                footer: {
+                                    text: `Nanami Translate`
+                                }
+                            }
+                        ]
+                    });
+                
+                }
             } catch (error) {
                 console.error(error);
             }
