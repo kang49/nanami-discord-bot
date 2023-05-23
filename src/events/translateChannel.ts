@@ -63,6 +63,31 @@ export = (client: client) => {
                 const message_contentTR: string = response_microsiftTR.data[0].translations[0].text;
 
                 if (message.content !== '') {
+                    if (message.attachments) {
+                        //@ts-ignore
+                        const attachmentURL = message.attachments.first().url;
+
+                        translateChannel_mainChannel.send({
+                            embeds: [
+                                {
+                                    author: {
+                                        name: `${message.author.username}`,
+                                        icon_url: `${message.author.avatarURL()}`,
+                                    },
+                                    color: 0x0099ff,
+                                    title: `**${message_contentTR}**`,
+                                    image: {
+                                        url: attachmentURL
+                                    },
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: `Nanami Translate`
+                                    }
+                                }
+                            ]
+                        });
+                        return;
+                    }
                     translateChannel_mainChannel.send({
                         embeds: [
                             {
@@ -149,6 +174,31 @@ export = (client: client) => {
                 const message_contentTR: string = response_microsiftTR.data[0].translations[0].text;
 
                 if (message.content !== '') {
+                    if (message.attachments) {
+                        //@ts-ignore
+                        const attachmentURL = message.attachments.first().url;
+
+                        translateChannel_targetChannel.send({
+                            embeds: [
+                                {
+                                    author: {
+                                        name: `${message.author.username}`,
+                                        icon_url: `${message.author.avatarURL()}`,
+                                    },
+                                    color: 0x0099ff,
+                                    title: `**${message_contentTR}**`,
+                                    image: {
+                                        url: attachmentURL
+                                    },
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: `Nanami Translate`
+                                    }
+                                }
+                            ]
+                        });
+                        return;
+                    }
                     translateChannel_targetChannel.send({
                         embeds: [
                             {
