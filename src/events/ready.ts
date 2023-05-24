@@ -33,4 +33,15 @@ export = (client: client) => {
             }
         });
     });
+
+    client.on("guildCreate", c => {
+        client.guilds.cache.forEach(async (guild) => {
+            try {
+                guild.commands.cache.forEach(command => guild.commands.delete(command.id));
+                guild.commands?.set(client.commandArray);
+            } catch (error) {
+                return;
+            }
+        });
+    });
 }
