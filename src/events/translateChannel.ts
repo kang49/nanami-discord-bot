@@ -11,14 +11,14 @@ export = (client: client) => {
         // Get sql where guild and mainChannel
         if (!message.guildId) return;
         
-        let translateChannel = await prisma.translateChannel.findMany({
+        let translateChannels = await prisma.translateChannel.findMany({
             where: {
                 guild: message.guildId,
                 mainChannel: message.channelId
             }
         });
         if (message.author.bot) return; //เช็คว่าเป็นบอทหรือไม่ กันการอ่านตัวเอง
-        if (translateChannel[0] === undefined) { //reply target to main
+        if (translateChannels[0] === undefined) { //reply target to main
             let translateChannel = await prisma.translateChannel.findMany({
                 where: {
                     guild: message.guildId,
@@ -62,19 +62,16 @@ export = (client: client) => {
                 const response_microsiftTR = await axios.request(options_microsoftTrAPI);
                 const message_contentTR: string = response_microsiftTR.data[0].translations[0].text;
 
-                let _avatarUrlprofile: string | undefined;
+                let _attachment: string | undefined;
                 try {
-                    _avatarUrlprofile = message.attachments.first()?.url;
+                    _attachment = message.attachments.first()?.url;
                 } catch (e) {
-                    _avatarUrlprofile = undefined;
+                    _attachment = undefined;
                 }
-
-                console.log(_avatarUrlprofile, 'to main');
                 //@ts-ignore
-                if (_avatarUrlprofile === undefined || _avatarUrlprofile === null) {
-                    _avatarUrlprofile = ''
+                if (_attachment === undefined || _attachment === null) {
+                    _attachment = ''
                 }
-                console.log(_avatarUrlprofile, 'to main')
                 translateChannel_mainChannel.send({
                     embeds: [
                         {
@@ -85,7 +82,7 @@ export = (client: client) => {
                             color: 0x0099ff,
                             title: `**${message_contentTR}**`,
                             image: {
-                                url: _avatarUrlprofile || '',
+                                url: _attachment || '',
                             },
                             timestamp: new Date().toISOString(),
                             footer: {
@@ -98,78 +95,80 @@ export = (client: client) => {
                 console.error(error);
             }
         }
-        else if (message.channelId === translateChannel[0].mainChannel) {
-            //@ts-ignores
-            const translateChannel_targetLanguage: string = translateChannel[0].targetLanguage;
-            //@ts-ignore
-            const translateChannel_targetChannelId: string = translateChannel[0].targetChannel;
+        else {
+        for (const translateChannel of translateChannels) {
+            if (message.channelId === translateChannel.mainChannel) {
+                //@ts-ignores
+                const translateChannel_targetLanguage: string = translateChannel.targetLanguage;
+                //@ts-ignore
+                const translateChannel_targetChannelId: string = translateChannel.targetChannel;
 
-            if (!translateChannel_targetChannelId) return;
+                if (!translateChannel_targetChannelId) continue;
 
-            const translateChannel_targetChannel: TextChannel | null = client.channels.cache.get(translateChannel_targetChannelId) as TextChannel | null;
-            if (!translateChannel_targetChannel) {
-                console.error('Target channel not found.');
-                return;
-            }
-
-            // Microsoft Translator API
-            const options_microsoftTrAPI = {
-                method: 'POST',
-                url: 'https://microsoft-translator-text.p.rapidapi.com/translate',
-                params: {
-                    'to[0]': translateChannel_targetLanguage,
-                    'api-version': '3.0',
-                    profanityAction: 'NoAction',
-                    textType: 'plain'
-                },
-                headers: {
-                    'content-type': 'application/json',
-                    'X-RapidAPI-Key': process.env.X_RAPIDAPI_KEY,
-                    'X-RapidAPI-Host': 'microsoft-translator-text.p.rapidapi.com'
-                },
-                data: [
-                    {
-                    Text: `${message.content}`
-                    }
-                ]
-            };
-
-            try {
-                const response_microsiftTR = await axios.request(options_microsoftTrAPI);
-                const message_contentTR: string = response_microsiftTR.data[0].translations[0].text;
-
-                if (message.content !== '') {
-                    let _avatarUrlprofile: string | undefined;
-                    try {
-                        _avatarUrlprofile = message.attachments.first()?.url;
-                    } catch (e) {
-                        _avatarUrlprofile = undefined;
-                    }
-
-                    console.log(_avatarUrlprofile, 'to target');
-                    translateChannel_targetChannel.send({
-                        embeds: [
-                            {
-                                author: {
-                                    name: `${message.author.username}`,
-                                    icon_url: `${message.author.avatarURL()}`,
-                                },
-                                color: 0x0099ff,
-                                title: `**${message_contentTR}**`,
-                                image: {
-                                    url: _avatarUrlprofile || '',
-                                },
-                                timestamp: new Date().toISOString(),
-                                footer: {
-                                    text: `Nanami Translate`
-                                }
-                            }
-                        ]
-                    });
+                const translateChannel_targetChannel: TextChannel | null = client.channels.cache.get(translateChannel_targetChannelId) as TextChannel | null;
+                if (!translateChannel_targetChannel) {
+                    console.error('Target channel not found.');
+                    continue;
                 }
-            } catch (error) {
-                console.error(error);
+
+                // Microsoft Translator API
+                const options_microsoftTrAPI = {
+                    method: 'POST',
+                    url: 'https://microsoft-translator-text.p.rapidapi.com/translate',
+                    params: {
+                        'to[0]': translateChannel_targetLanguage,
+                        'api-version': '3.0',
+                        profanityAction: 'NoAction',
+                        textType: 'plain'
+                    },
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-RapidAPI-Key': process.env.X_RAPIDAPI_KEY,
+                        'X-RapidAPI-Host': 'microsoft-translator-text.p.rapidapi.com'
+                    },
+                    data: [
+                        {
+                            Text: `${message.content}`
+                        }
+                    ]
+                };
+
+                try {
+                    const response_microsiftTR = await axios.request(options_microsoftTrAPI);
+                    const message_contentTR: string = response_microsiftTR.data[0].translations[0].text;
+
+                    if (message.content !== '') {
+                        let _attachment: string | undefined;
+                        try {
+                            _attachment = message.attachments.first()?.url;
+                        } catch (e) {
+                            _attachment = undefined;
+                        }
+                        translateChannel_targetChannel.send({
+                            embeds: [
+                                {
+                                    author: {
+                                        name: `${message.author.username}`,
+                                        icon_url: `${message.author.avatarURL()}`,
+                                    },
+                                    color: 0x0099ff,
+                                    title: `**${message_contentTR}**`,
+                                    image: {
+                                        url: _attachment || '',
+                                    },
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: `Nanami Translate`
+                                    }
+                                }
+                            ]
+                        });
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
             }
         }
+    }
     });
 };
