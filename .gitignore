@@ -134,5 +134,9 @@ dist
 .DS_Store
 __MACOSX
 
+#VsCode
+.vscode/settings.json
+
 #Author
 src/sample export.js
+run/run.js
