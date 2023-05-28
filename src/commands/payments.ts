@@ -89,11 +89,7 @@ export = {
             const promptpayQRImage = await qr.toDataURL(promptpayPayload);
 
             // Create the image buffer from the data URL
-            console.log(promptpayQRImage)
             const image_PromptPay_Buffer = Buffer.from(promptpayQRImage.split(',')[1], 'base64');
-
-            const fileName = 'qrcode2.png';
-            fs.writeFileSync(fileName, image_PromptPay_Buffer);
 
             // Load the image frame
             const imageFramePath = 'assets/img/Nanami Promptpay frame.png';
