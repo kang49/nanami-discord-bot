@@ -108,7 +108,6 @@ export = {
                             console.error(err);
                             return;
                         }
-
                         sharp(imageFrameData)
                             .composite([{ input: image_PromptPay_Buffer_resize, left: 1480, top: 140 }])
                             .toBuffer((err, image_PromptPay_Buffer_overray) => {
@@ -127,23 +126,21 @@ export = {
                                     x: -1,
                                     y: 15,
                                 };
-
-                                sharp(image_PromptPay_Buffer_overray)
-                                    .composite([{ 
-                                        input: Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg">
-                                        <text x="${textOptions.x}" y="${textOptions.y}" font-family="${textOptions.font}" font-size="${textOptions.fontSize}" fill="${textOptions.fill}" font-weight="bold" text-anchor="start">${textOptions.text}</text>
-                                        </svg>`), 
-                                        top: 480, 
-                                        left: 1420
-                                    }])
-                                    .toBuffer((err, promptpay_image_final) => {
-                                        if (err) {
-                                            console.error(err);
-                                            return;
-                                        }
-
+                                // sharp(image_PromptPay_Buffer_overray)
+                                //     .composite([{ 
+                                //         input: Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg">
+                                //         <text x="${textOptions.x}" y="${textOptions.y}" font-family="${textOptions.font}" font-size="${textOptions.fontSize}" fill="${textOptions.fill}" font-weight="bold" text-anchor="start">${textOptions.text}</text>
+                                //         </svg>`), 
+                                //         top: 480, 
+                                //         left: 1420
+                                //     }])
+                                //     .toBuffer((err, promptpay_image_final) => {
+                                //         if (err) {
+                                //             console.error(err);
+                                //             return;
+                                //         }
                                         // Create an Attachment from the edited image data
-                                        const attachment = new Discord.AttachmentBuilder(promptpay_image_final, { name: 'promptpayqr.png' });
+                                        const attachment = new Discord.AttachmentBuilder(image_PromptPay_Buffer_overray, { name: 'promptpayqr.png' });
 
                                         // Send the Embed message with the edited image
                                         interaction.followUp({
@@ -163,7 +160,7 @@ export = {
                                             ],
                                             files: [attachment],
                                         });
-                                    });
+                                    // });
                             });
                     });
             });
