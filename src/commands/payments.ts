@@ -121,7 +121,7 @@ export = {
 
                                 // Add text overlay
                                 const textOptions = {
-                                    text: `${userName} | ${promptpayAmount} Bath`,
+                                    text: `${userName} | ${promptpayAmount} บาท`,
                                     font: 'Kanit, sans-serif',
                                     fontSize: 20,
                                     fill: '#97A7B8',
@@ -157,6 +157,7 @@ export = {
                                                     },
                                                     color: 0x0099ff,
                                                     title: 'สร้างการชำระเงินผ่าน **Promptpay QR** สำเร็จแล้วเจ้าค่ะ',
+                                                    description: `เจ้าของ: **${userName}** | จำนวน **${promptpayAmount}** บาท`,
                                                     image: {
                                                         url: `attachment://promptpayqr.png`,
                                                     },
