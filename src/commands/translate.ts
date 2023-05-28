@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 import type client from '../index';
 import type { CommandInteraction } from 'discord.js';
-import { describe } from 'node:test';
 
 const axios = require('axios');
 
@@ -416,6 +415,16 @@ export = {
     // console.log(mainLangChoices , targetLangChoices)
 
     if (chanelOption === 'channel') {
+      //เช็ค Role Admin
+      if (!interaction.memberPermissions?.has('Administrator')) return interaction.reply({ 
+        embeds: [
+            {
+                color: 0xE6ED20,
+                title: `***Error***`,
+                description: `⚠️ ขอโทษนะคะที่ทำตามคำสั่งไม่ได้ แต่คุณไม่ใช่แอดมินนะคะ ⚠️`
+            }
+        ]
+     });
       if (!mainChannelOption || mainChannelOption.type !== 0) return interaction.reply({
         embeds: [
           {
@@ -479,6 +488,16 @@ export = {
       )
     }
     else if (chanelOption === 'cancel') {
+      //เช็ค Role Admin
+      if (!interaction.memberPermissions?.has('Administrator')) return interaction.reply({ 
+        embeds: [
+            {
+                color: 0xE6ED20,
+                title: `***Error***`,
+                description: `⚠️ ขอโทษนะคะที่ทำตามคำสั่งไม่ได้ แต่คุณไม่ใช่แอดมินนะคะ ⚠️`
+            }
+        ]
+     });
       if (!targetChannelOption || targetChannelOption.type !== 0) return interaction.reply({
         embeds: [
           {
