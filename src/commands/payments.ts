@@ -54,7 +54,7 @@ export = {
 
         //promptpay
         const promptpayID = interaction.options.get('phone-or-id')?.value //ดึงค่าของ phone-or-id ใน promptpay // wallet id เป็น str
-        const promptpayAmount = interaction.options.get('amount')?.value //ดึงค่าของ amount ใน promptpay //amount int
+        const promptpayAmount: number = interaction.options.get('amount')!.value as number; //ดึงค่าของ amount ใน promptpay //amount int
 
         if (payOptions === 'promptpay') {
             //push user info to database
@@ -82,16 +82,18 @@ export = {
             catch (e) {
                 console.log(e)
             }
-
             //@ts-ignore
-            const promptpayPayload = generatePayload(promptpayID, { promptpayAmount });
+            const promptpayPayload = generatePayload(promptpayID, { amount: promptpayAmount });
 
             // Generate the QR code image
             const promptpayQRImage = await qr.toDataURL(promptpayPayload);
 
             // Create the image buffer from the data URL
-            const image_PromptPay_Data = promptpayQRImage.split(',')[1];
-            const image_PromptPay_Buffer = Buffer.from(image_PromptPay_Data, 'base64');
+            console.log(promptpayQRImage)
+            const image_PromptPay_Buffer = Buffer.from(promptpayQRImage.split(',')[1], 'base64');
+
+            const fileName = 'qrcode2.png';
+            fs.writeFileSync(fileName, image_PromptPay_Buffer);
 
             // Load the image frame
             const imageFramePath = 'assets/img/Nanami Promptpay frame.png';
