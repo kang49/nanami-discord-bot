@@ -36,7 +36,7 @@ export = {
                 {
                     color: 0xE6ED20,
                     title: `***Error***`,
-                    description: `⚠️ You are not permission to use this command ⚠️`
+                    description: `⚠️ ขอโทษนะคะที่ทำตามคำสั่งไม่ได้ แต่คุณไม่ใช่แอดมินนะคะ ⚠️`
                 }
             ]
          });

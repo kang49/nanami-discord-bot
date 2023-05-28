@@ -1,8 +1,7 @@
-import type client from '../index'
-
+import type client from '../index';
 
 export = (client: client) => {
-    client.on("messageCreate", message => {
-        
-    });
-}
+  client.on('messageCreate', async (message) => {
+  
+  });
+};

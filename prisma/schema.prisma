@@ -34,3 +34,13 @@ model translateChannel {
   targetLanguage String?
   create_time DateTime @default(now())
 }
+
+model userPayments {
+  id Int @id @default(autoincrement())
+  guild String?
+  userId String? @unique
+  userName String?
+  userTag String?
+  promptpay String?
+  create_time DateTime @default(now())
+}

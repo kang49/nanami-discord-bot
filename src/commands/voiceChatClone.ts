@@ -53,6 +53,16 @@ export = {
         // console.log('Confirm Option:', confirmOption); //yes or no
 
         if (setupOption === 'setup') {
+            //เช็ค Role Admin
+            if (!interaction.memberPermissions?.has('Administrator')) return interaction.reply({ 
+                embeds: [
+                    {
+                        color: 0xE6ED20,
+                        title: `***Error***`,
+                        description: `⚠️ ขอโทษนะคะที่ทำตามคำสั่งไม่ได้ แต่คุณไม่ใช่แอดมินนะคะ ⚠️`
+                    }
+                ]
+            });
             if (!voiceChannelOption || voiceChannelOption.type !== 2) return interaction.reply({ 
                 embeds: [
                     {
@@ -83,6 +93,16 @@ export = {
             })
         }
         else if (confirmOption === 'cancel') {
+            //เช็ค Role Admin
+            if (!interaction.memberPermissions?.has('Administrator')) return interaction.reply({ 
+                embeds: [
+                    {
+                        color: 0xE6ED20,
+                        title: `***Error***`,
+                        description: `⚠️ ขอโทษนะคะที่ทำตามคำสั่งไม่ได้ แต่คุณไม่ใช่แอดมินนะคะ ⚠️`
+                    }
+                ]
+            });
             if (!voiceChannelOption || voiceChannelOption.type !== 2) return interaction.reply({ 
                 embeds: [
                     {
