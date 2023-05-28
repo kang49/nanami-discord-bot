@@ -97,71 +97,77 @@ export = {
             const imageFramePath = 'assets/img/Nanami Promptpay frame.png';
             const imageFrameData = fs.readFileSync(imageFramePath);
 
-            // Resize and overlay the image with text
-            sharp(image_PromptPay_Buffer)
-                .resize(250, 250)
-                .toBuffer((err, image_PromptPay_Buffer_resize) => {
-                    if (err) {
-                        console.error(err);
-                        return;
-                    }
+            // Send the initial reply or defer the reply
+            interaction.reply({
+                content: 'รอสักครู่นะเจ้าคะ หนูกำลังทำให้อยู่ค่ะ 💕',
+                ephemeral: true // หากต้องการให้ข้อความนี้เป็นเพียงแค่ข้อความแชทที่เท่ากับผู้ใช้เท่านั้นที่เห็น (ephemeral)
+            }).then(() => { //หลังจากตอบ processing แล้วค่อยทำ
+                // Resize and overlay the image with text
+                sharp(image_PromptPay_Buffer)
+                    .resize(250, 250)
+                    .toBuffer((err, image_PromptPay_Buffer_resize) => {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
 
-                    sharp(imageFrameData)
-                        .composite([{ input: image_PromptPay_Buffer_resize, left: 1480, top: 140 }])
-                        .toBuffer((err, image_PromptPay_Buffer_overray) => {
-                            if (err) {
-                                console.error(err);
-                                return;
-                            }
+                        sharp(imageFrameData)
+                            .composite([{ input: image_PromptPay_Buffer_resize, left: 1480, top: 140 }])
+                            .toBuffer((err, image_PromptPay_Buffer_overray) => {
+                                if (err) {
+                                    console.error(err);
+                                    return;
+                                }
 
-                            // Add text overlay
-                            const textOptions = {
-                                text: `${userName} | ${promptpayAmount} Bath`,
-                                font: 'Kanit, sans-serif',
-                                fontSize: 20,
-                                fill: '#97A7B8',
-                                gravity: 'center',
-                                x: -1,
-                                y: 15,
-                            };
+                                // Add text overlay
+                                const textOptions = {
+                                    text: `${userName} | ${promptpayAmount} Bath`,
+                                    font: 'Kanit, sans-serif',
+                                    fontSize: 20,
+                                    fill: '#97A7B8',
+                                    gravity: 'center',
+                                    x: -1,
+                                    y: 15,
+                                };
 
-                            sharp(image_PromptPay_Buffer_overray)
-                            .composite([{ 
-                                input: Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg">
-                                  <text x="${textOptions.x}" y="${textOptions.y}" font-family="${textOptions.font}" font-size="${textOptions.fontSize}" fill="${textOptions.fill}" font-weight="bold" text-anchor="start">${textOptions.text}</text>
-                                </svg>`), 
-                                top: 480, 
-                                left: 1420
-                            }])
-                                .toBuffer((err, promptpay_image_final) => {
-                                    if (err) {
-                                        console.error(err);
-                                        return;
-                                    }
+                                sharp(image_PromptPay_Buffer_overray)
+                                    .composite([{ 
+                                        input: Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg">
+                                        <text x="${textOptions.x}" y="${textOptions.y}" font-family="${textOptions.font}" font-size="${textOptions.fontSize}" fill="${textOptions.fill}" font-weight="bold" text-anchor="start">${textOptions.text}</text>
+                                        </svg>`), 
+                                        top: 480, 
+                                        left: 1420
+                                    }])
+                                    .toBuffer((err, promptpay_image_final) => {
+                                        if (err) {
+                                            console.error(err);
+                                            return;
+                                        }
 
-                                    // Create an Attachment from the edited image data
-                                    const attachment = new Discord.AttachmentBuilder(promptpay_image_final, { name: 'promptpayqr.png' });
+                                        // Create an Attachment from the edited image data
+                                        const attachment = new Discord.AttachmentBuilder(promptpay_image_final, { name: 'promptpayqr.png' });
 
-                                    // Send the Embed message with the edited image
-                                    interaction.reply({
-                                        embeds: [
-                                            {
-                                                author: {
-                                                    name: `${interaction.user.username}`,
-                                                    icon_url: `${interaction.user.avatarURL()}`,
+                                        // Send the Embed message with the edited image
+                                        interaction.followUp({
+                                            embeds: [
+                                                {
+                                                    author: {
+                                                        name: `${interaction.user.username}`,
+                                                        icon_url: `${interaction.user.avatarURL()}`,
+                                                    },
+                                                    color: 0x0099ff,
+                                                    title: 'สร้างการชำระเงินผ่าน **Promptpay QR** สำเร็จแล้วเจ้าค่ะ',
+                                                    image: {
+                                                        url: `attachment://promptpayqr.png`,
+                                                    },
                                                 },
-                                                color: 0x0099ff,
-                                                title: 'สร้างการชำระเงินผ่าน **Promptpay QR** สำเร็จแล้วเจ้าค่ะ',
-                                                image: {
-                                                    url: `attachment://promptpayqr.png`,
-                                                },
-                                            },
-                                        ],
-                                        files: [attachment],
+                                            ],
+                                            files: [attachment],
+                                        });
                                     });
-                                });
-                        });
-                });
+                            });
+                    });
+            });
         }
     }
 }
