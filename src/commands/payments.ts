@@ -26,17 +26,51 @@ export = {
                     {
                         "name": "phone-or-id",
                         "description": "enter your phone number or id or wallet id you use",
+                        description_localizations: {
+                            'th': 'ใส่เบอร์โทรศัพท์หรือ id ที่คุณผูกไว้กับ promptpay'
+                        },
                         "type": 3,
                         "required": true
                     },
                     {
                         "name": "amount",
                         "description": "enter your amount of this QR",
+                        description_localizations: {
+                            'th': 'จำนวนเงิน (ใส่ 0 ถ้าไม่กำหนด)'
+                        },
                         "type": 10,
                         "required": true
                     },
                 ]
             },
+            {
+                name: 'debtor-list',
+                description: 'Record your accounts receivable as list',
+                description_localizations: {
+                    'th': 'บันทึกลูกหนี้ที่ค้างเงินไว้ในลิสต์'
+                },
+                type: 1,
+                options: [
+                    {
+                        name: 'debtor',
+                        description: 'Enter user is your debtor',
+                        description_localizations: {
+                            'th': 'ใครคือลูกหนี้ของคุณ'
+                        },
+                        type: 6,
+                        required: true,
+                    },
+                    {
+                        "name": "amount",
+                        "description": "enter the amount your debtor is owed",
+                        description_localizations: {
+                            'th': 'จำนวนเงินที่ลูกหนี้ติดค้างคุณอยู่'
+                        },
+                        "type": 10,
+                        "required": true
+                    },
+                ]
+            }
         ]
     },
     async execute(client: client, interaction: CommandInteraction) {
@@ -53,8 +87,17 @@ export = {
         const userTag: string = interaction.user.discriminator
 
         //promptpay
-        const promptpayID = interaction.options.get('phone-or-id')?.value //ดึงค่าของ phone-or-id ใน promptpay // wallet id เป็น str
-        const promptpayAmount: number = interaction.options.get('amount')!.value as number; //ดึงค่าของ amount ใน promptpay //amount int
+        const promptpayID: string = interaction.options.get('phone-or-id')?.value as string //ดึงค่าของ phone-or-id ใน promptpay // wallet id เป็น str
+        const promptpayAmount: number = interaction.options.get('amount')!.value as number; //ดึงค่าของ amount ใน promptpay //amount number double
+
+        //debtorList
+        const debtorUser = interaction.options.get('debtor') //ดึงค่าของ debtor ใน debtorList // debtorUser/ info
+        const debtorAmount: number = interaction.options.get('amount')?.value as number //ดึงค่าของ amount ใน debtor // debtorAmount number double
+
+        //debtor info
+        const debtorUserID: string = debtorUser?.user?.id as string
+        const debtorUserName: string = debtorUser?.user?.username as string
+        const debtorUserTag: string = debtorUser?.user?.discriminator as string
 
         if (payOptions === 'promptpay') {
             //push user info to database
@@ -164,6 +207,170 @@ export = {
                             });
                     });
             });
+        }
+        else if (payOptions === 'debtor-list') {
+            try {
+                //Get debtorCheck data
+                const deptorCheck = await prisma.debtorCheck.findMany({
+                    where: {
+                        debtorUserId: debtorUserID,
+                        creditorUserId: userID
+                    }
+                });
+                if (deptorCheck.length === 0) { //กรณีไม่เคยมียอดค้าง
+                    if (debtorAmount <= 0) {
+                        try {
+                            await prisma.debtorCheck.deleteMany({
+                                where: {
+                                  debtorUserId: debtorUserID,
+                                  creditorUserId: userID,
+                                },
+                              });                           
+                        } catch (e) {
+                            console.log(e)
+                            return;
+                        }
+                        return interaction.reply(
+                            {
+                                embeds: [
+                                    {
+                                        author: {
+                                            name: `${userName}#${userTag}`,
+                                            icon_url: `${interaction.user.displayAvatarURL()}`,
+                                        },
+                                        color: 0x0099ff,
+                                        title: `⭕️ **ลบคุณ @${debtorUserName}#${debtorUserTag} | ไม่มียอดค้างชำระนะคะ**`,
+                                        description: `จากที่หนูตรวจดู คุณ **@${debtorUserName}#${debtorUserTag}** ไม่มีหนี้ที่ต้องจ่ายให้คุณ **@${userName}#${userTag}** นะคะ งั้นหนูลบออกจาก List เลยละกันค่ะ`,
+                                        thumbnail: {
+                                            url: `${debtorUser?.user?.displayAvatarURL()}`
+                                        }
+                                    }
+                                ]
+                            }
+                        )
+                    }
+                    try {
+                        await prisma.debtorCheck.create({
+                            data: {
+                                guild: guildId ?? "",
+                                creditorUserId: userID ?? "",
+                                creditorUserName: userName ?? "",
+                                creditorUserTag: userTag ?? "",
+
+                                debtorUserId: debtorUserID ?? "",
+                                debtorUserName: debtorUserName ?? "",
+                                debtorUserTag: debtorUserTag ?? "",
+                                debtorAmount: debtorAmount
+                            }
+                        })
+                    } catch (e) {
+                        console.log(e)
+                        return;
+                    }
+                    interaction.reply(
+                        {
+                            embeds: [
+                                {
+                                    author: {
+                                        name: `${userName}#${userTag}`,
+                                        icon_url: `${interaction.user.displayAvatarURL()}`,
+                                    },
+                                    color: 0x0099ff,
+                                    title: `🟦 **บันทึกผู้ที่ติดเงินคุณไว้เรียบร้อยแล้วค่ะ**`,
+                                    description: `**@${debtorUserName}#${debtorUserTag}** เพิ่งจะติดเงินคุณ **@${userName}#${userTag}** จำนวน **${debtorAmount}** บาท`,
+                                    thumbnail: {
+                                        url: `${debtorUser?.user?.displayAvatarURL()}`
+                                    }
+                                }
+                            ]
+                        }
+                    )
+                }
+                else if (deptorCheck.length === 1) { //กรณีมียอดค้างอยู่แล้ว
+                    console.log(deptorCheck[0])
+                    
+                    let oldDebt: number = deptorCheck[0].debtorAmount as number
+                    
+                    //Sum oldDebt and newDebt
+                    const allDebt: number = oldDebt + debtorAmount //All Debt // number
+
+                    if (allDebt === 0) {
+                        try {
+                            await prisma.debtorCheck.deleteMany({
+                                where: {
+                                  debtorUserId: debtorUserID,
+                                  creditorUserId: userID,
+                                },
+                              });                           
+                        } catch (e) {
+                            console.log(e)
+                            return;
+                        }
+                        interaction.reply(
+                            {
+                              embeds: [
+                                {   author: {
+                                        name: `${userName}#${userTag}`,
+                                        icon_url: `${interaction.user.displayAvatarURL()}`,
+                                    },
+                                    color: 0x0099ff,
+                                    title: `⭕️ **ลบคุณ @${debtorUserName}#${debtorUserTag} | ไม่มียอดค้างชำระนะคะ**`,
+                                    description: `จากที่หนูตรวจดู คุณ **@${debtorUserName}#${debtorUserTag}** ไม่มีหนี้ที่ต้องจ่ายให้คุณ **@${userName}#${userTag}** นะคะ งั้นหนูลบออกจาก List เลยละกันค่ะ`,
+                                    thumbnail: {
+                                        url: `${debtorUser?.user?.displayAvatarURL()}`
+                                    }
+                                }
+                              ]
+                            }
+                        )
+                    } else if (allDebt <= 0) {
+                        return;
+                    }
+                    else {
+                        try {
+                            await prisma.debtorCheck.updateMany({
+                                where: {
+                                debtorUserId: debtorUserID,
+                                creditorUserId: userID,
+                                },
+                                data: {
+                                debtorAmount: allDebt,
+                                },
+                            });                                                
+                        } catch (e) {
+                            console.log(e)
+                            return;
+                        }
+                        interaction.reply(
+                            {
+                              embeds: [
+                                {
+                                    author: {
+                                        name: `${userName}#${userTag}`,
+                                        icon_url: `${interaction.user.displayAvatarURL()}`,
+                                    },
+                                    color: 0x0099ff,
+                                    title: `🟦 **บันทึกผู้ที่ติดเงินคุณไว้เรียบร้อยแล้วค่ะ**`,
+                                    description: `**@${debtorUserName}#${debtorUserTag}** ติดเงินคุณ **@${userName}#${userTag}** เพิ่ม จำนวน **${debtorAmount}** บาท
+                                    
+                                    อย่าลืมจ่ายของงวดที่แล้วด้วยน้า 💕`,
+                                    thumbnail: {
+                                        url: `${debtorUser?.user?.displayAvatarURL()}`
+                                    }
+                                }
+                              ]
+                            }
+                        )
+                    }
+                }
+                else if (deptorCheck.length >= 1) {
+                    console.log(deptorCheck)
+                    console.log('Error: Have dublicate data in database')
+                }
+            } catch (e) {
+                console.log(e)
+                return;
+            }
         }
     }
 }

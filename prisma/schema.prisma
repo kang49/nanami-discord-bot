@@ -42,5 +42,17 @@ model userPayments {
   userName String?
   userTag String?
   promptpay String?
+}
+
+model debtorCheck {
+  id Int @id @default(autoincrement())
+  guild String?
+  creditorUserId String?
+  creditorUserName String?
+  creditorUserTag String?
+  debtorUserId String?
+  debtorUserName String?
+  debtorUserTag String?
+  debtorAmount Float?
   create_time DateTime @default(now())
 }
