@@ -19,17 +19,6 @@ export = {
                     'th': 'ลบข้อความทั้งหมดในช่องแชท'
                 },
                 type: 1,
-                options: [
-                    {
-                        "name": "channel",
-                        "description": "Select channel you want",
-                        description_localizations: {
-                            'th': 'เลือกช่องแชทที่จะลบ'
-                        },
-                        "type": 7,
-                        "required": true
-                    },
-                ]
             },
             {
                 name: 'del-only',
@@ -39,15 +28,6 @@ export = {
                 },
                 type: 1,
                 options: [
-                    {
-                        name: 'channel',
-                        description: "Select channel you want",
-                        description_localizations: {
-                            'th': 'เลือกช่องแชทที่จะลบข้อความ'
-                        },
-                        type: 7,
-                        required: true,
-                    },
                     {
                         "name": "user",
                         "description": "Select user you want",
@@ -83,7 +63,7 @@ export = {
         const userName: string = interaction.user.username
         const userTag: string = interaction.user.discriminator
         
-        const channelIdAns: string = interaction.options.get('channel')?.value as string
+        const channelIdAns: string = interaction.channelId as string
         const userIdAns: string = interaction.options.get('user')?.value as string
 
         
