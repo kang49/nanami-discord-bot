@@ -113,14 +113,15 @@ export = {
                 //@ts-ignore
                 await client.channels.cache.get(deleteMessage[i].channelId)?.messages.delete(deleteMessage[i].messageId);
 
-                await prisma.deleteMessage.delete({
+                await prisma.deleteMessage.deleteMany({
                     where: {
                         //@ts-ignore
                         messageId: deleteMessage[i].messageId,
                     },
                 });  
                 } catch (e) {
-                continue;
+                    console.log(e)
+                    continue;
                 }
             }
             const sentMessage = await interaction.followUp({
@@ -141,8 +142,8 @@ export = {
             const sendMessageId: string = sentMessage.id as string
             setTimeout(async() => {
                 //@ts-ignore
-                await client.channels.cache.get(deleteMessage[0].channelId)?.messages.delete(sendMessageId);
-                await prisma.deleteMessage.delete({
+                await client.channels.cache.get(channelIdAns)?.messages.delete(sendMessageId);
+                await prisma.deleteMessage.deleteMany({
                     where: {
                         messageId: sendMessageId
                     },
