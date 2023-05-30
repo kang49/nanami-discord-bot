@@ -42,6 +42,7 @@ model userPayments {
   userName String?
   userTag String?
   promptpay String?
+  create_time DateTime @default(now())
 }
 
 model debtorCheck {
