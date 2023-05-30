@@ -113,8 +113,9 @@ export = {
                 //@ts-ignore
                 await client.channels.cache.get(deleteMessage[i].channelId)?.messages.delete(deleteMessage[i].messageId);
 
-                await prisma.deleteMessage.deleteMany({
+                await prisma.deleteMessage.delete({
                     where: {
+                        //@ts-ignore
                         messageId: deleteMessage[i].messageId,
                     },
                 });  
@@ -137,11 +138,11 @@ export = {
                 },
                 ],
             });
-            const sendMessageId = sentMessage.id;
-            setTimeout(() => {
+            const sendMessageId: string = sentMessage.id as string
+            setTimeout(async() => {
                 //@ts-ignore
-                client.channels.cache.get(deleteMessage[0].channelId)?.messages.delete(sendMessageId);
-                prisma.deleteMessage.deleteMany({
+                await client.channels.cache.get(deleteMessage[0].channelId)?.messages.delete(sendMessageId);
+                await prisma.deleteMessage.delete({
                     where: {
                         messageId: sendMessageId
                     },
