@@ -57,3 +57,12 @@ model debtorCheck {
   debtorAmount Float?
   create_time DateTime @default(now())
 }
+
+model deleteMessage {
+  id Int @id @default(autoincrement())
+  guildId String?
+  channelId String?
+  messageId String? @unique
+  messageAuthorId String?
+  create_time DateTime @default(now())
+}
