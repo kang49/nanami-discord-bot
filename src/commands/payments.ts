@@ -55,19 +55,56 @@ export = {
                         name: 'debtor',
                         description: 'Enter user is your debtor',
                         description_localizations: {
-                            'th': 'ใครคือลูกหนี้ของคุณ'
+                            'th': 'ใครติดเงินเหรอคะ?'
                         },
                         type: 6,
                         required: true,
                     },
                     {
                         "name": "amount",
-                        "description": "enter the amount your debtor is owed",
+                        "description": "The amount the debtor owes you or a negative amount to reduce the debt owed",
                         description_localizations: {
-                            'th': 'จำนวนเงินที่ลูกหนี้ติดค้างคุณอยู่'
+                            'th': 'จำนวนเงินที่ลูกหนี้ติดค้างคุณอยู่ หรือจำนวนติดลบเพื่อลดหนี้ที่ติดไว้'
                         },
                         "type": 10,
                         "required": true
+                    },
+                ]
+            },
+            {
+                name: 'paid',
+                description: `Tell the creditor that you've paid.`,
+                description_localizations: {
+                    'th': 'จะคืนเงินที่ยืมมาเหรอคะ?'
+                },
+                type: 1,
+                options: [
+                    {
+                        name: 'creditor',
+                        description: 'Enter user is your creditor',
+                        description_localizations: {
+                            'th': 'จะคืนเงินให้ใครเหรอคะ?'
+                        },
+                        type: 6,
+                        required: true,
+                    },
+                    {
+                        "name": "amount",
+                        "description": "Amount to be returned to the creditor",
+                        description_localizations: {
+                            'th': 'จะคืนเท่าไหร่เหรอคะ?'
+                        },
+                        "type": 10,
+                        "required": true
+                    },
+                    {
+                        name: 'slip-img',
+                        description: 'Upload your transfer slip (Optional)',
+                        description_localizations: {
+                            'th': 'อัพโหลดสลิปหน่อยไหมคะ? (ไม่บังคับ)'
+                        },
+                        type: 11,
+                        required: false,
                     },
                 ]
             }
@@ -80,7 +117,7 @@ export = {
         //@ts-ignore
         const payOptions = interaction?.options.getSubcommand(); // Get the pay subcommand name //promptpay
 
-        //User info
+        //Input User info
         const guildId: string = interaction.guildId ?? ""
         const userID: string = interaction.user.id;
         const userName: string = interaction.user.username
@@ -90,15 +127,29 @@ export = {
         const promptpayID: string = interaction.options.get('phone-or-id')?.value as string //ดึงค่าของ phone-or-id ใน promptpay // wallet id เป็น str
         const promptpayAmount: number = interaction.options.get('amount')!.value as number; //ดึงค่าของ amount ใน promptpay //amount number double
 
-        //debtorList
-        const debtorUser = interaction.options.get('debtor') //ดึงค่าของ debtor ใน debtorList // debtorUser/ info
+        //debtor-list
+        const debtorUser = interaction.options.get('debtor') //ดึงค่าของ debtor ใน debtorList // debtorUser info
         const debtorAmount: number = interaction.options.get('amount')?.value as number //ดึงค่าของ amount ใน debtor // debtorAmount number double
-
-        //debtor info
+         //debtor info
         const debtorUserID: string = debtorUser?.user?.id as string
         const debtorUserName: string = debtorUser?.user?.username as string
         const debtorUserTag: string = debtorUser?.user?.discriminator as string
 
+        //paid
+        const creditorUser = interaction.options.get('creditor') //ดึงค่าของ creditor ใน paid // creditor info
+        const paidAmount: number = interaction.options.get('amount')?.value as number //ดึงค่าของ amount ใน paid // paidAmount number double
+        try{
+            //@ts-ignore
+            var paidSlip: string = interaction.options.getAttachment('slip-img').url as string //ดึงภาพ slip จาก paid
+        } catch {
+            var paidSlip: string = ''
+        }
+
+        //Creditor info
+        const creditorUserID: string = creditorUser?.user?.id as string
+        const creditorUserName: string = creditorUser?.user?.username as string
+        const creditorUserTag: string = creditorUser?.user?.discriminator as string
+        
         if (payOptions === 'promptpay') {
             //push user info to database
             try {
@@ -211,13 +262,13 @@ export = {
         else if (payOptions === 'debtor-list') {
             try {
                 //Get debtorCheck data
-                const deptorCheck = await prisma.debtorCheck.findMany({
+                const debtorCheck = await prisma.debtorCheck.findMany({
                     where: {
                         debtorUserId: debtorUserID,
                         creditorUserId: userID
                     }
                 });
-                if (deptorCheck.length === 0) { //กรณีไม่เคยมียอดค้าง
+                if (debtorCheck.length === 0) { //กรณีไม่เคยมียอดค้าง
                     if (debtorAmount <= 0) {
                         try {
                             await prisma.debtorCheck.deleteMany({
@@ -238,14 +289,15 @@ export = {
                                             name: `${userName}#${userTag}`,
                                             icon_url: `${interaction.user.displayAvatarURL()}`,
                                         },
-                                        color: 0x0099ff,
+                                        color: 0xFE0101,
                                         title: `⭕️ **ลบคุณ @${debtorUserName}#${debtorUserTag} | ไม่มียอดค้างชำระนะคะ**`,
-                                        description: `จากที่หนูตรวจดู คุณ **@${debtorUserName}#${debtorUserTag}** ไม่มีหนี้ที่ต้องจ่ายให้คุณ **@${userName}#${userTag}** นะคะ งั้นหนูลบออกจาก List เลยละกันค่ะ`,
+                                        description: `จากที่หนูตรวจดู คุณ **${debtorUserName}#${debtorUserTag}** ไม่มีหนี้ที่ต้องจ่ายให้คุณ **${userName}#${userTag}** นะคะ งั้นหนูลบออกจาก List เลยละกันค่ะ`,
                                         thumbnail: {
                                             url: `${debtorUser?.user?.displayAvatarURL()}`
                                         }
                                     }
-                                ]
+                                ],
+                                ephemeral: true,
                             }
                         )
                     }
@@ -277,7 +329,7 @@ export = {
                                     },
                                     color: 0x0099ff,
                                     title: `🟦 **บันทึกผู้ที่ติดเงินคุณไว้เรียบร้อยแล้วค่ะ**`,
-                                    description: `**@${debtorUserName}#${debtorUserTag}** เพิ่งจะติดเงินคุณ **@${userName}#${userTag}** จำนวน **${debtorAmount}** บาท`,
+                                    description: `**${debtorUserName}#${debtorUserTag}** เพิ่งจะติดเงินคุณ **${userName}#${userTag}** จำนวน **${debtorAmount}** บาท`,
                                     thumbnail: {
                                         url: `${debtorUser?.user?.displayAvatarURL()}`
                                     }
@@ -286,10 +338,8 @@ export = {
                         }
                     )
                 }
-                else if (deptorCheck.length === 1) { //กรณีมียอดค้างอยู่แล้ว
-                    console.log(deptorCheck[0])
-                    
-                    let oldDebt: number = deptorCheck[0].debtorAmount as number
+                else if (debtorCheck.length === 1) { //กรณีมียอดค้างอยู่แล้ว
+                    let oldDebt: number = debtorCheck[0].debtorAmount as number
                     
                     //Sum oldDebt and newDebt
                     const allDebt: number = oldDebt + debtorAmount //All Debt // number
@@ -313,14 +363,15 @@ export = {
                                         name: `${userName}#${userTag}`,
                                         icon_url: `${interaction.user.displayAvatarURL()}`,
                                     },
-                                    color: 0x0099ff,
+                                    color: 0xFE0101,
                                     title: `⭕️ **ลบคุณ @${debtorUserName}#${debtorUserTag} | ไม่มียอดค้างชำระนะคะ**`,
-                                    description: `จากที่หนูตรวจดู คุณ **@${debtorUserName}#${debtorUserTag}** ไม่มีหนี้ที่ต้องจ่ายให้คุณ **@${userName}#${userTag}** นะคะ งั้นหนูลบออกจาก List เลยละกันค่ะ`,
+                                    description: `จากที่หนูตรวจดู คุณ **${debtorUserName}#${debtorUserTag}** ไม่มีหนี้ที่ต้องจ่ายให้คุณ **${userName}#${userTag}** นะคะ งั้นหนูลบออกจาก List เลยละกันค่ะ`,
                                     thumbnail: {
                                         url: `${debtorUser?.user?.displayAvatarURL()}`
                                     }
                                 }
-                              ]
+                              ],
+                              ephemeral: true,
                             }
                         )
                     } else if (allDebt <= 0) {
@@ -351,7 +402,8 @@ export = {
                                     },
                                     color: 0x0099ff,
                                     title: `🟦 **บันทึกผู้ที่ติดเงินคุณไว้เรียบร้อยแล้วค่ะ**`,
-                                    description: `**@${debtorUserName}#${debtorUserTag}** ติดเงินคุณ **@${userName}#${userTag}** เพิ่ม จำนวน **${debtorAmount}** บาท
+                                    description: `**${debtorUserName}#${debtorUserTag}** ติดเงินคุณ **${userName}#${userTag}** เพิ่ม
+                                    จำนวน **${debtorAmount}** บาท รวมเป็น **${allDebt}** บาท แล้วนะคะ
                                     
                                     อย่าลืมจ่ายของงวดที่แล้วด้วยน้า 💕`,
                                     thumbnail: {
@@ -363,12 +415,136 @@ export = {
                         )
                     }
                 }
-                else if (deptorCheck.length >= 1) {
-                    console.log(deptorCheck)
+                else if (debtorCheck.length >= 1) {
+                    console.log(debtorCheck)
                     console.log('Error: Have dublicate data in database')
                 }
             } catch (e) {
                 console.log(e)
+                return;
+            }
+        }
+        else if (payOptions === 'paid') {
+            try {
+                //Get debtorCheck data
+                const debtorCheck = await prisma.debtorCheck.findMany({
+                    where: {
+                        debtorUserId: userID,
+                        creditorUserId: creditorUserID
+                    }
+                });
+                if (debtorCheck.length === 0) { //กรณีผู้ใช้คนนี้ไม่ใช่ลูกหนี้
+                    return interaction.reply(
+                        {
+                            embeds: [
+                                {
+                                    color: 0xF6FE01,
+                                    title: `⚠️ **Error** ⚠️`,
+                                    description: `จากที่หนูตรวจดู คุณ **${userName}#${userTag}** ไม่มีหนี้ที่ต้องจ่ายให้คุณ **${creditorUserName}#${creditorUserTag}** นะคะ`,
+                                }
+                            ],
+                            ephemeral: true,
+                        }
+                    )
+                }
+                else if (debtorCheck.length === 1) {
+                    let oldDebt: number = debtorCheck[0].debtorAmount as number
+
+                    //Minus oldDebt and paidAmount
+                    const allDebt: number = oldDebt - paidAmount //number
+
+                    if (paidSlip !== '') {
+                        interaction.reply(
+                            {
+                                embeds: [
+                                    {
+                                        author: {
+                                            name: `${userName}#${userTag}`,
+                                            icon_url: `${interaction.user.displayAvatarURL()}`,
+                                        },
+                                        color: 0x0099ff,
+                                        title: `💵 **${userName}#${userTag}** ได้คืนเงิน`,
+                                        description: `**${userName}#${userTag}** ได้คืนเงินจำนวน **${paidAmount}** บาท
+                                        และมียอดคงเหลืออีก ${allDebt} บาท ตุณ **@${creditorUserName}#${creditorUserTag}** จะอนุมัติการชำระครั้งนี้หรือไม่คะ?`,
+                                        thumbnail: {
+                                            url: `${creditorUser?.user?.displayAvatarURL()}`
+                                        },
+                                        fields: [
+                                            {
+                                                //@ts-ignore
+                                                name: 'หลักฐานสลิปเงินโอน',
+                                                value: ''
+                                            }
+                                        ],
+                                        image: {
+                                            url: paidSlip
+                                        }
+                                    }
+                                ],
+                                components: [
+                                    {
+                                    type: 1,
+                                    components: [
+                                        {
+                                            type: 2,
+                                            style: 1,
+                                            label: 'อนุมัติ',
+                                            custom_id: `creditor_approve_transfering,${userID},${userName},${userTag},${allDebt}`,
+                                        },
+                                        {
+                                            type: 2,
+                                            style: 4,
+                                            label: 'ปฏิเสธ',
+                                            custom_id: `creditor_reject_transfering,${userID},${userName},${userTag},${allDebt}`,
+                                        },
+                                    ],
+                                    },
+                                ],
+                            }
+                        )
+                    } else {
+                        interaction.reply(
+                            {
+                                embeds: [
+                                    {
+                                        author: {
+                                            name: `${userName}#${userTag}`,
+                                            icon_url: `${interaction.user.displayAvatarURL()}`,
+                                        },
+                                        color: 0x0099ff,
+                                        title: `💵 **${userName}#${userTag}** ได้คืนเงิน`,
+                                        description: `**${userName}#${userTag}** ได้คืนเงินจำนวน **${paidAmount}** บาท
+                                        และมียอดคงเหลืออีก ${allDebt} บาท คุณ **@${creditorUserName}#${creditorUserTag}** จะอนุมัติการชำระครั้งนี้หรือไม่คะ?`,
+                                        thumbnail: {
+                                            url: `${creditorUser?.user?.displayAvatarURL()}`
+                                        },
+                                    }
+                                ],
+                                components: [
+                                    {
+                                    type: 1,
+                                    components: [
+                                        {
+                                            type: 2,
+                                            style: 1,
+                                            label: 'อนุมัติ',
+                                            custom_id: `creditor_approve_transfering,${userID},${userName},${userTag},${allDebt}`,
+                                        },
+                                        {
+                                            type: 2,
+                                            style: 4,
+                                            label: 'ปฏิเสธ',
+                                            custom_id: `creditor_reject_transfering,${userID},${userName},${userTag},${allDebt}`,
+                                        },
+                                    ],
+                                    },
+                                ],
+                            }
+                        )
+                    }
+                }
+            } catch (e) {
+                console.log(e);
                 return;
             }
         }
