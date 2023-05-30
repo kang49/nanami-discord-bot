@@ -117,7 +117,7 @@ export = {
                     where: {
                         messageId: deleteMessage[i].messageId,
                     },
-                    });  
+                });  
                 } catch (e) {
                 continue;
                 }
@@ -141,6 +141,11 @@ export = {
             setTimeout(() => {
                 //@ts-ignore
                 client.channels.cache.get(deleteMessage[0].channelId)?.messages.delete(sendMessageId);
+                prisma.deleteMessage.deleteMany({
+                    where: {
+                        messageId: sendMessageId
+                    },
+                });  
             }, 5000);
         }
         interaction.reply({
