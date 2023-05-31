@@ -430,7 +430,7 @@ export = {
           {
             color: 0xFEED01,
             title: `***Error***`,
-            description: `⚠️ **${mainChannelOption.name}** นี่ไม่ใช่ **Text Channel** นี่เจ้าคะ ⚠️
+            description: `⚠️ **${mainChannelOption.name}** นี่ไม่ใช่ **Text Channel** นี่คะ ⚠️
 
                         ⚠️ **${mainChannelOption.name}** is not **Text Channel** ⚠️`
           }
@@ -441,7 +441,7 @@ export = {
           {
             color: 0xFEED01,
             title: `***Error***`,
-            description: `⚠️ **${targetChannelOption.name}** นี่ไม่ใช่ **Text Channel** นี่เจ้าคะ ⚠️
+            description: `⚠️ **${targetChannelOption.name}** นี่ไม่ใช่ **Text Channel** นี่คะ ⚠️
 
                         ⚠️ **${targetChannelOption.name}** is not **Text Channel** ⚠️`
           }
@@ -503,7 +503,7 @@ export = {
           {
             color: 0xE6ED20,
             title: `***Error***`,
-            description: `⚠️ **${targetChannelOption.name}** นี่ไม่ใช่ **Text Channel** นี่เจ้าคะ ⚠️
+            description: `⚠️ **${targetChannelOption.name}** นี่ไม่ใช่ **Text Channel** นี่คะ ⚠️
 
                         ⚠️ **${targetChannelOption.name}** is not **Text Channel** ⚠️`
           }

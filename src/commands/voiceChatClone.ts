@@ -68,7 +68,7 @@ export = {
                     {
                         color: 0xE6ED20,
                         title: `***Error***`,
-                        description: `⚠️ นี่ไม่ใช่ **Voice Channel** นี่เจ้าคะ ⚠️
+                        description: `⚠️ นี่ไม่ใช่ **Voice Channel** นี่คะ ⚠️
 
                         ⚠️ This's not **Voice Channel** ⚠️`
                     }
@@ -87,7 +87,7 @@ export = {
                 embeds: [
                     {
                         color: 0x0099ff,
-                        description: `🟦 **Registed Clone Voice Channel** ที่ห้องไอดี: **${_create_Vstate_id}** เรียบร้อยแล้วเจ้าค่ะ`
+                        description: `🟦 **Registed Clone Voice Channel** ที่ห้องไอดี: **${_create_Vstate_id}** เรียบร้อยแล้วค่ะ`
                     }
                 ]
             })
@@ -108,7 +108,7 @@ export = {
                     {
                         color: 0xE6ED20,
                         title: `***Error***`,
-                        description: `⚠️ นี่ไม่ใช่ **Voice Channel** นี่เจ้าคะ ⚠️
+                        description: `⚠️ นี่ไม่ใช่ **Voice Channel** นี่คะ ⚠️
 
                         ⚠️ This's not **Voice Channel** ⚠️`
                     }
@@ -127,7 +127,7 @@ export = {
                 embeds: [
                     {
                         color: 0x0099ff,
-                        description: `🟥 **Cancelled Clone Voice Channel** เรียบร้อยแล้วเจ้าค่ะ`
+                        description: `🟥 **Cancelled Clone Voice Channel** เรียบร้อยแล้วค่ะ`
                     }
                 ]
             })

@@ -264,7 +264,7 @@ export = {
                                                         icon_url: `${interaction.user.avatarURL()}`,
                                                     },
                                                     color: 0x0099ff,
-                                                    title: 'สร้างการชำระเงินผ่าน **Promptpay QR** สำเร็จแล้วเจ้าค่ะ',
+                                                    title: 'สร้างการชำระเงินผ่าน **Promptpay QR** สำเร็จแล้วค่ะ',
                                                     description: `เจ้าของ: **${userName}** | จำนวน **${promptpayAmount}** บาท`,
                                                     image: {
                                                         url: `attachment://promptpayqr.png`,
