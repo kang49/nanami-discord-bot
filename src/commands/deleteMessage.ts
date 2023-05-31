@@ -19,6 +19,17 @@ export = {
                     'th': 'ลบข้อความทั้งหมดในช่องแชท'
                 },
                 type: 1,
+                options: [
+                    {
+                        name: 'value',
+                        description: 'Number of messages to delete',
+                        description_localizations: {
+                            'th': 'จำนวนข้อความที่ต้องการลบ'
+                        },
+                        type: 4,
+                        required: true
+                    }
+                ]
             },
             {
                 name: 'del-only',
@@ -32,11 +43,20 @@ export = {
                         "name": "user",
                         "description": "Select user you want",
                         description_localizations: {
-                            'th': 'เลิอก User ที่ต้องการจะลบข้อความ'
+                            'th': 'เลือก User ที่ต้องการจะลบข้อความ'
                         },
                         "type": 6,
                         "required": true
                     },
+                    {
+                        name: 'value',
+                        description: 'Number of messages to delete',
+                        description_localizations: {
+                            'th': 'จำนวนข้อความที่ต้องการลบ'
+                        },
+                        type: 4,
+                        required: true
+                    }
                 ]
             },
         ]
@@ -65,6 +85,7 @@ export = {
         
         const channelIdAns: string = interaction.channelId as string
         const userIdAns: string = interaction.options.get('user')?.value as string
+        const valueAns: number = interaction.options.get('value')?.value as number
 
         
         if (delMsgOptions === 'del-all') {
@@ -73,7 +94,11 @@ export = {
                 where: {
                     guildId: guildId,
                     channelId: channelIdAns
-                }
+                },
+                orderBy: {
+                    create_time: 'desc' //sort by
+                },
+                take: valueAns //Limit
             })
         }
         else if (delMsgOptions === 'del-only') {
@@ -82,7 +107,11 @@ export = {
                     guildId: guildId,
                     channelId: channelIdAns,
                     messageAuthorId: userIdAns
-                }
+                },
+                orderBy: {
+                    create_time: 'desc' //sort by
+                },
+                take: valueAns //Limit
             })
         }
 
