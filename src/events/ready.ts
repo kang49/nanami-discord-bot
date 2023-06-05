@@ -2,9 +2,15 @@ import { Events } from 'discord.js';
 import type client from '../index';
 
 const statusList = [
-    { name: 'ชื่อนานามินะคะ 💕' },
+    { name: 'เค้าชื่อนานามินะ 💕' },
     { name: 'เธอว่างเล่นกับเค้ามั้ยคะ?' },
-    { name: 'อยากโดนเธอจังอ้าาส์ 💘' }
+    { name: 'เธอทำไรอยู่เหรอ?' },
+    { name: 'ไอต้าวบ้าา 💓' },
+    { name: 'ขอกอดเธอได้ไหมคะ 🥺' },
+    { name: 'คืนนี้อย่าลืมฝันถึงเค้าบ้างนะ 💤' },
+    { name: 'ใครจะน่ารักเท่าเธอ 💕' },
+    { name: 'ตั้งใจเรียนนะคะเธอ 📚' },
+    { name: 'วันนี้เหนื่อยไหมคะ?' },
     // Add more status messages as needed
 ];
 
