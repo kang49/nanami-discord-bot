@@ -37,7 +37,7 @@ export = {
         const userId: string = interaction.member?.user.id as string
         const guildId: string = interaction.guildId ?? ''
         const channelId: string = interaction.channelId
-        const textMessage = interaction.options.get('text')?.value //ดึงค่าของ text //message from user
+        const textMessage: string = interaction.options.get('text')?.value as string //ดึงค่าของ text //message from user
         //Check user already in voice channel
         const guildMember = await interaction.guild?.members.fetch(userId);
 
@@ -53,6 +53,18 @@ export = {
             ],
             ephemeral: true,
         });
+        if (textMessage.length > 150) {
+            return interaction.reply({ 
+                embeds: [
+                    {
+                        color: 0xE6ED20,
+                        title: `***Limit***`,
+                        description: `ข้อความยาวเกินไปหนูฝึกพูดไม่ทันหรอกนะคะ 🥺`
+                    }
+                ],
+                ephemeral: true,
+            });
+        }
 
         //Botnoi voice API
         const options = {
@@ -71,7 +83,7 @@ export = {
             },
         };
         const sendMessage = interaction.reply({
-            content: 'รอสักครู่นะคะ หนูกำลังฝึกพูดอยู่ค่ะ 😮 💕',
+            content: 'รอสักครู่นะคะ หนูกำลังฝึกพูดอยู่ค่ะ 😮 อะ อ่าาา อิ อี~ ~ 💕',
             ephemeral: true // หากต้องการให้ข้อความนี้เป็นเพียงแค่ข้อความแชทที่เท่ากับผู้ใช้เท่านั้นที่เห็น (ephemeral)
         }).then(async (message) => {
             axios(options)
