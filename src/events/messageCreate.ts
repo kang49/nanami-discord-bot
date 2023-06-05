@@ -19,7 +19,6 @@ export = (client: client) => {
                 }
             })
         } catch (e) {
-            console.log(e)
             return;
         }
     });
