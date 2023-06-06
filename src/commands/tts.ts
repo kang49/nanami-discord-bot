@@ -87,7 +87,7 @@ export = {
             ephemeral: true // หากต้องการให้ข้อความนี้เป็นเพียงแค่ข้อความแชทที่เท่ากับผู้ใช้เท่านั้นที่เห็น (ephemeral)
         }).then(async (message) => {
             //Try local voice
-            const localVoicePath = `/Users/kang49/Desktop/nanami-discord-bot/assets/nanami_tts_data/${textMessage}.m4a`;
+            const localVoicePath = `${process.env.PATH_}/nanami-discord-bot/assets/nanami_tts_data/${textMessage}.m4a`;
             if (fs.existsSync(localVoicePath)) {
                 //Speak
                 //@ts-ignore
@@ -122,7 +122,7 @@ export = {
                                 description: `${textMessage}`,
                                 timestamp: new Date().toISOString(),
                                 footer: {
-                                    text: `Nanami Speak | Local`
+                                    text: `Nanami /Speak | Local`
                                 }
                             },
                         ],
@@ -182,7 +182,7 @@ export = {
                                 description: `${textMessage}`,
                                 timestamp: new Date().toISOString(),
                                 footer: {
-                                    text: `Nanami Speak`
+                                    text: `Nanami /Speak`
                                 }
                             },
                         ],
