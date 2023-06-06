@@ -4,7 +4,7 @@ import type client from '../index';
 import type { CommandInteraction } from 'discord.js';
 const { getVoiceConnection, joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
 
-const { createReadStream } = require('fs');
+const fs = require('fs');
 const { pipeline } = require('stream');
 const { promisify } = require('util');
 const pipelineAsync = promisify(pipeline);
@@ -82,14 +82,72 @@ export = {
                 type_media: 'm4a',
             },
         };
-        const sendMessage = interaction.reply({
+        interaction.reply({
             content: 'รอสักครู่นะคะ หนูกำลังฝึกพูดอยู่ค่ะ 😮 อะ อ่าาา อิ อี~ ~ 💕',
             ephemeral: true // หากต้องการให้ข้อความนี้เป็นเพียงแค่ข้อความแชทที่เท่ากับผู้ใช้เท่านั้นที่เห็น (ephemeral)
         }).then(async (message) => {
+            //Try local voice
+            const localVoicePath = `/Users/kang49/Desktop/nanami-discord-bot/assets/nanami_tts_data/${textMessage}.m4a`;
+            if (fs.existsSync(localVoicePath)) {
+                //Speak
+                //@ts-ignore
+                const voiceChannel = interaction.member?.voice.channel;
+                const connection = await joinVoiceChannel({
+                    channelId: voiceChannel.id,
+                    guildId: voiceChannel.guild.id,
+                    adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+                });
+                const audioPlayer = createAudioPlayer();
+                const audioResource = createAudioResource(localVoicePath);
+                connection.subscribe(audioPlayer);
+                audioPlayer.play(audioResource);
+    
+                // Optional: Handle playback finished event
+                audioPlayer.on('idle', () => {
+                    setTimeout(() => {
+                        connection.destroy();
+                    }, 5 * 60 * 1000); // 5 minutes
+
+                    // Delete the message
+                    message.delete().catch(console.error);
+                    interaction.followUp({
+                        embeds: [
+                            {
+                                author: {
+                                    name: `${interaction.user.username}`,
+                                    icon_url: `${interaction.user.avatarURL()}`,
+                                },
+                                color: 0x0099ff,
+                                title: `สั่งให้ Nanami พูดว่า`,
+                                description: `${textMessage}`,
+                                timestamp: new Date().toISOString(),
+                                footer: {
+                                    text: `Nanami Speak | Local`
+                                }
+                            },
+                        ],
+                    });
+                });
+                console.log(`Nanami TTS loaded local voice ${textMessage}.m4a`)
+                return;
+            }
+
             axios(options)
             .then(async function (response: any) {
                 const botnoi_response = response.data;
                 const botnoi_voice: string = botnoi_response.audio_url;
+
+                //Save tts to database
+                async function downloadAudio(botnoi_voice: string, outputPath: string) {
+                    try {
+                      const response = await axios.get(botnoi_voice, { responseType: 'arraybuffer' });
+                      fs.writeFileSync(outputPath, response.data);
+                    } catch (error) {
+                      return;
+                    }
+                  }
+                  const outputPath = `assets/nanami_tts_data/${textMessage}.m4a`;
+                  downloadAudio(botnoi_voice, outputPath);
     
                 //Speak
                 //@ts-ignore
@@ -130,6 +188,7 @@ export = {
                         ],
                     });
                 });
+                return;
             })
             .catch(async function (error: any) {
                 //Speak
@@ -154,6 +213,7 @@ export = {
                     // Delete the message
                     message.delete().catch(console.error);
                 });
+                return;
             });
         });
     },

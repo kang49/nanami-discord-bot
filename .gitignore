@@ -140,3 +140,6 @@ __MACOSX
 #Author
 src/sample export.js
 run/run.js
+
+#Local data
+assets/nanami_tts_data
