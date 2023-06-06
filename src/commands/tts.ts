@@ -112,6 +112,23 @@ export = {
 
                     // Delete the message
                     message.delete().catch(console.error);
+                    interaction.followUp({
+                        embeds: [
+                            {
+                                author: {
+                                    name: `${interaction.user.username}`,
+                                    icon_url: `${interaction.user.avatarURL()}`,
+                                },
+                                color: 0x0099ff,
+                                title: `สั่งให้ Nanami พูดว่า`,
+                                description: `${textMessage}`,
+                                timestamp: new Date().toISOString(),
+                                footer: {
+                                    text: `Nanami Speak`
+                                }
+                            },
+                        ],
+                    });
                 });
             })
             .catch(async function (error: any) {
@@ -138,6 +155,6 @@ export = {
                     message.delete().catch(console.error);
                 });
             });
-        });        
+        });
     },
 }
