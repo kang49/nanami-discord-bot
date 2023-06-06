@@ -146,7 +146,7 @@ export = {
                       return;
                     }
                   }
-                  const outputPath = `assets/nanami_tts_data/${textMessage}.m4a`;
+                  const outputPath = `${process.env.PATH_}/nanami-discord-bot/assets/nanami_tts_data/${textMessage}.m4a`;
                   downloadAudio(botnoi_voice, outputPath);
     
                 //Speak
