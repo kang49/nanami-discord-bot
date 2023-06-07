@@ -44,6 +44,24 @@ export = {
         //Check user already in voice channel
         const guildMember = await interaction.guild?.members.fetch(userId);
 
+        //Get Privilege Guild
+        try {
+            var privilegeGuild = await prisma.guild.findMany({
+                where: {
+                    guild_id: guildId,
+                    privilege: true
+                }
+            });
+          
+            if (privilegeGuild.length === 0) {
+                privilegeGuild = [];
+            }
+        } catch (e) {
+            console.log(e);
+            privilegeGuild = [];
+        }
+          
+
         // Check if the guild member is in a voice state
         const inVoiceState = guildMember?.voice.channel
         if (!inVoiceState) return interaction.reply({ 
@@ -113,8 +131,29 @@ export = {
 
                     // Delete the message
                     message.delete().catch(console.error);
-                    if (userId === privilegeUserID) {
+                    if (privilegeGuild.length >= 1) {
                         var attachment = new Discord.AttachmentBuilder(`${process.env.PATH_}/nanami-discord-bot/assets/nanami_tts_data/${textMessage}.m4a`);
+
+                        interaction.followUp({
+                            embeds: [
+                                {
+                                    author: {
+                                        name: `${interaction.user.username}`,
+                                        icon_url: `${interaction.user.avatarURL()}`,
+                                    },
+                                    color: 0x0099ff,
+                                    title: `สั่งให้ Nanami พูดว่า`,
+                                    description: `${textMessage}`,
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: `Nanami /Speak | Local`
+                                    }
+                                },
+                            ],
+                            files: [attachment]
+                        });
+                        console.log(`Nanami TTS loaded local voice ${textMessage}.m4a`)
+                        return;
                     }
                     interaction.followUp({
                         embeds: [
@@ -132,10 +171,10 @@ export = {
                                 }
                             },
                         ],
-                        files: [attachment]
                     });
+                    console.log(`Nanami TTS loaded local voice ${textMessage}.m4a`)
+                    return;
                 });
-                console.log(`Nanami TTS loaded local voice ${textMessage}.m4a`)
                 return;
             }
 
@@ -177,41 +216,61 @@ export = {
 
                     // Delete the message
                     message.delete().catch(console.error);
-                    if (userId !== privilegeUserID) {
-                        var botnoi_voice_attachment = ''
-                    } else {var botnoi_voice_attachment = botnoi_voice}
-                    interaction.followUp({
-                        embeds: [
-                            {
-                                author: {
-                                    name: `${interaction.user.username}`,
-                                    icon_url: `${interaction.user.avatarURL()}`,
-                                },
-                                color: 0x0099ff,
-                                title: `สั่งให้ Nanami พูดว่า`,
-                                description: `${textMessage}`,
-                                timestamp: new Date().toISOString(),
-                                footer: {
-                                    text: `Nanami /Speak`
-                                }
-                            },
-                        ],
-                        components: [
-                            {
-                                type: 1,
-                                components: [
-                                    {
-                                        type: 2,
-                                        style: 5,
-                                        label: 'โหลดเสียง ⬇',
-                                        url: `${botnoi_voice_attachment}`,
+                    if (privilegeGuild.length < 1) {
+                        interaction.followUp({
+                            embeds: [
+                                {
+                                    author: {
+                                        name: `${interaction.user.username}`,
+                                        icon_url: `${interaction.user.avatarURL()}`,
                                     },
-                                ],
-                            },
-                        ],
-                    });
+                                    color: 0x0099ff,
+                                    title: `สั่งให้ Nanami พูดว่า`,
+                                    description: `${textMessage}`,
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: `Nanami /Speak`
+                                    }
+                                },
+                            ],
+                        });
+                        return;
+                    } 
+                    else {
+                        var botnoi_voice_attachment = botnoi_voice
+                        interaction.followUp({
+                            embeds: [
+                                {
+                                    author: {
+                                        name: `${interaction.user.username}`,
+                                        icon_url: `${interaction.user.avatarURL()}`,
+                                    },
+                                    color: 0x0099ff,
+                                    title: `สั่งให้ Nanami พูดว่า`,
+                                    description: `${textMessage}`,
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: `Nanami /Speak`
+                                    }
+                                },
+                            ],
+                            components: [
+                                {
+                                    type: 1,
+                                    components: [
+                                        {
+                                            type: 2,
+                                            style: 5,
+                                            label: 'โหลดเสียง ⬇',
+                                            url: `${botnoi_voice_attachment}`,
+                                        },
+                                    ],
+                                },
+                            ],
+                        });
+                        return;
+                    }
                 });
-                return;
             })
             .catch(async function (error: any) {
                 //Speak

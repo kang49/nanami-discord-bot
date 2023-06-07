@@ -15,6 +15,7 @@ model guild {
   log_id String?
   guild_id String? @unique
   inout Boolean @default(true)
+  privilege Boolean @default(false)
   create_time DateTime @default(now())
 }
 
