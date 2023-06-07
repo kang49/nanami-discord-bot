@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 import type client from '../index';
 import type { CommandInteraction } from 'discord.js';
 const { getVoiceConnection, joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
+const Discord = require('discord.js');
 
 const fs = require('fs');
 const { pipeline } = require('stream');
@@ -10,6 +11,8 @@ const { promisify } = require('util');
 const pipelineAsync = promisify(pipeline);
 const ffmpeg = require('ffmpeg-static');
 const axios = require('axios');
+
+const privilegeUserID: string = `${process.env.PRIVILEGE}` as string
 
 export = {
     data: {
@@ -110,6 +113,9 @@ export = {
 
                     // Delete the message
                     message.delete().catch(console.error);
+                    if (userId === privilegeUserID) {
+                        var attachment = new Discord.AttachmentBuilder(`${process.env.PATH_}/nanami-discord-bot/assets/nanami_tts_data/${textMessage}.m4a`);
+                    }
                     interaction.followUp({
                         embeds: [
                             {
@@ -126,6 +132,7 @@ export = {
                                 }
                             },
                         ],
+                        files: [attachment]
                     });
                 });
                 console.log(`Nanami TTS loaded local voice ${textMessage}.m4a`)
@@ -170,6 +177,9 @@ export = {
 
                     // Delete the message
                     message.delete().catch(console.error);
+                    if (userId !== privilegeUserID) {
+                        var botnoi_voice_attachment = ''
+                    } else {var botnoi_voice_attachment = botnoi_voice}
                     interaction.followUp({
                         embeds: [
                             {
@@ -184,6 +194,19 @@ export = {
                                 footer: {
                                     text: `Nanami /Speak`
                                 }
+                            },
+                        ],
+                        components: [
+                            {
+                                type: 1,
+                                components: [
+                                    {
+                                        type: 2,
+                                        style: 5,
+                                        label: 'โหลดเสียง ⬇',
+                                        url: `${botnoi_voice_attachment}`,
+                                    },
+                                ],
                             },
                         ],
                     });
