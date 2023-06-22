@@ -135,7 +135,11 @@ export = (client: client) => {
                         description: `คุณ **${displayName_prepare}** ได้เข้าสู่ Server!!`,
                         image: {
                             url: `attachment://welcomeMsg.png`
-                        }
+                        },
+                        footer: {
+                            text: `Nanami Welcome`
+                        },
+                        timestamp: new Date().toISOString(),
                     }
                 ],
                 files: [attachment],
