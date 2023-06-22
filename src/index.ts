@@ -13,6 +13,7 @@ export default class client extends Client {
 				'GuildMessages',
 				'GuildVoiceStates',
 				'MessageContent',
+				'GuildMembers',
 			]
 		})
 		this.reqevent()

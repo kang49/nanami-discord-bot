@@ -13,8 +13,10 @@ datasource db {
 model guild {
   id Int @id @default(autoincrement())
   log_id String?
+  welcome_log_id String?
   guild_id String? @unique
   inout Boolean @default(true)
+  welcomeMsg Boolean @default(false)
   privilege Boolean @default(false)
   create_time DateTime @default(now())
 }
