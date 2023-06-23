@@ -96,6 +96,23 @@ export = (client: client) => {
                 ctx.font = 'bold 25px Arial';
                 // Draw text at the centered position
                 ctx.fillText(`Nitro Supporter`, 550, 278);
+            } else if (member.user.bot) {
+                //Badge
+                // Load image
+                const badgeImage = await loadImage('assets/img/bot_icon.png');
+                
+                // Calculate avatar position and radius
+                const badgeSize = 60;
+                const badgeX = 780;
+                const badgeY = 237;
+
+                // Draw avatar image within the clipping path
+                ctx.drawImage(badgeImage, badgeX, badgeY, badgeSize, badgeSize);
+
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 25px Arial';
+                // Draw text at the centered position
+                ctx.fillText(`Discord`, 670, 278);
             }
 
             //Avatar
@@ -123,6 +140,7 @@ export = (client: client) => {
 
             // Save image
             const welcomeBuffer = canvas.toBuffer();
+            // fs.writeFileSync('assets/welcomeMsg.png', welcomeBuffer);
 
             //Send
             const attachment = new Discord.AttachmentBuilder(welcomeBuffer, { name: 'welcomeMsg.png' });
