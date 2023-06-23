@@ -2,13 +2,14 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 import type client from '../index'
 import type { CommandInteraction } from "discord.js"
+import welcomeMsg from '../events/welcomeMsg';
 
 export = {
     data: {
-        name: "in-out",
-        description: "Report user in and out voice chat in server",
+        name: "welcome-msg",
+        description: "Send welcome message to new member in server",
         description_localizations: {
-            'th': 'รีพอร์ตการเข้าออก Voice Chat'
+            'th': 'ส่งข้อความต้อนรับให้กับสมาชิกใหม่'
         },
         options: [
             {
@@ -39,7 +40,7 @@ export = {
                     description: `⚠️ ขอโทษนะคะที่ทำตามคำสั่งไม่ได้ แต่คุณไม่ใช่แอดมินนะคะ ⚠️`
                 }
             ]
-         });
+        });
 
 
         const _setup = interaction.options.get('setup')?.value //ดึงค่าของ args
@@ -48,24 +49,22 @@ export = {
                 embeds: [
                     {
                         color: 0xE51F33,
-                        description: `🟥 **Cancle in-out report** ที่ห้องไอดี: **${interaction.channelId}** เรียบร้อยแล้วค่ะ`
+                        description: `🟥 **Cancle welcome message** ที่ห้องไอดี: **${interaction.channelId}** เรียบร้อยแล้วค่ะ`
                     }
                 ]
             })
-
             try {
                 await prisma.guild.upsert({
                     update: {
-                        log_id: interaction.channelId,
-                        inout: false
+                        welcome_log_id: interaction.channelId,
+                        welcomeMsg: false
                     },
                     where: {
                         guild_id: interaction.guildId ?? ""
                     },
                     create: {
                         guild_id: interaction.guildId,
-                        log_id: interaction.channelId,
-                        inout: false
+                        welcome_log_id: interaction.channelId,
                     }
                 })
             } catch {
@@ -83,20 +82,22 @@ export = {
             }
             return;
         }
+        
 
         // เขียน db
         try{
             await prisma.guild.upsert({
                 update: {
-                    log_id: interaction.channelId,
-                    inout: true
+                    welcome_log_id: interaction.channelId,
+                    welcomeMsg: true
                 },
                 where: {
                     guild_id: interaction.guildId ?? ""
                 },
                 create: {
                     guild_id: interaction.guildId,
-                    log_id: interaction.channelId
+                    welcome_log_id: interaction.channelId,
+                    welcomeMsg: true
                 }
             })
         } catch {
@@ -117,11 +118,11 @@ export = {
             embeds: [
                 {
                     color: 0x0099ff,
-                    description: `🟦 **Setup in-out report** ที่ห้องไอดี: **${interaction.channelId}** เรียบร้อยแล้วค่ะ
+                    description: `🟦 **Setup welcome message** ที่ห้องไอดี: **${interaction.channelId}** เรียบร้อยแล้วค่ะ
                     
                     ⚠️ **หมายเหตุ:** ถ้า Setup แล้วใช้ไม่ได้ให้ Setup ซ้ำอีกรอบนะคะ`
                 }
             ]
         })
     }
-}
+};

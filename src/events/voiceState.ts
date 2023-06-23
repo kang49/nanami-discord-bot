@@ -12,7 +12,8 @@ export = (client: client) => {
             // Get guild data
             const guild = await prisma.guild.findFirst({
                 where: {
-                    guild_id: newState.guild.id
+                    guild_id: newState.guild.id,
+                    inout: true
                 }
             })
             if (!guild?.inout) return;
