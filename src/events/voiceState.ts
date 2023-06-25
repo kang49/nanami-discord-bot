@@ -24,7 +24,7 @@ export = (client: client) => {
                 if (!_channel) return;
                 if (_channel.type !== ChannelType.GuildText) return;
                 const guildName = newState.guild.name;
-                // console.log(`[${guildName}][in-out]: ✅ ${user?.displayName} joined ${newState.channel?.name}`);
+                console.log(`[${guildName}][in-out]: ✅ ${user?.displayName} joined ${newState.channel?.name}`);
                 _channel?.send({
                     embeds: [
                         {
@@ -46,7 +46,7 @@ export = (client: client) => {
                 if (!_channel) return;
                 if (_channel.type !== ChannelType.GuildText) return;
                 const guildName = newState.guild.name;
-                // console.log(`[${guildName}][in-out]: ⭕️ ${user?.displayName} left ${oldState.channel?.name}`);
+                console.log(`[${guildName}][in-out]: ⭕️ ${user?.displayName} left ${oldState.channel?.name}`);
                 _channel.send({
                     embeds: [
                         {
@@ -68,7 +68,7 @@ export = (client: client) => {
                 if (!_channel) return;
                 if (_channel.type !== ChannelType.GuildText) return;
                 const guildName = newState.guild.name;
-                // console.log(`[${guildName}][in-out]: 🔄 ${user?.displayName} moved from ${oldState.channel?.name} to ${newState.channel?.name}`);
+                console.log(`[${guildName}][in-out]: 🔄 ${user?.displayName} moved from ${oldState.channel?.name} to ${newState.channel?.name}`);
                 _channel.send({
                     embeds: [
                         {

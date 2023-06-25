@@ -66,6 +66,8 @@ model deleteMessage {
   guildId String?
   channelId String?
   messageId String? @unique
+  messageContent String?
   messageAuthorId String?
+  messageAuthorName String?
   create_time DateTime @default(now())
 }
