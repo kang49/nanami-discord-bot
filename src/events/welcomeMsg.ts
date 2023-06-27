@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 import fs from 'fs';
 const Discord = require('discord.js');
-import { ChannelType } from 'discord.js';
+import { ChannelType} from 'discord.js';
 
 import { createCanvas, loadImage } from 'canvas';
 
@@ -22,6 +22,7 @@ export = (client: client) => {
         const memberCount = member.guild.memberCount;
         let userAvatar = member.user.displayAvatarURL()?? ''
         const userFlags = member.user.flags;
+        const userPremium = member.premiumSince;
 
         const _guildId = await client.guilds.fetch(`${guild_sql?.guild_id}`)
         const _welcomeChannelId = await _guildId.channels.fetch(`${guild_sql?.welcome_log_id}`)
@@ -79,7 +80,7 @@ export = (client: client) => {
                 ctx.font = 'bold 25px Arial';
                 // Draw text at the centered position
                 ctx.fillText(`Discord Developer`, 520, 278);
-            } else if (userFlags?.has('PremiumEarlySupporter')) {
+            } else if (userFlags?.has('PremiumEarlySupporter') || (userPremium)) {
                 //Badge
                 // Load image
                 const badgeImage = await loadImage('assets/img/nitro_icon.png');
