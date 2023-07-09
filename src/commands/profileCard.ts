@@ -46,7 +46,16 @@ export = {
                     userId: userId,
                 }
             })
-            if (!user_sql) return;
+            if (!user_sql) return interaction.followUp({ 
+                embeds: [
+                    {
+                        color: 0xE6ED20,
+                        title: `***Error***`,
+                        description: `⚠️ ไม่พบข้อมูลของคุณใน Sever นี้เลยค่ะ ลองพูดคุยใน Server ก่อนนะคะ ⚠️`
+                    }
+                ],
+                ephemeral: true,
+            });
             //@ts-ignore
             let userAvatar: string = userOption.member?.displayAvatarURL({ size: 4096 })  as string;
             const guildName: string = user_sql.guildName as string;
