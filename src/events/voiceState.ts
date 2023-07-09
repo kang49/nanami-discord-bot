@@ -22,15 +22,14 @@ export = (client: client) => {
             const _guild = await client.guilds.fetch(`${guild?.guild_id}`)
             const _channel = await _guild.channels.fetch(`${guild?.log_id}`)
 
-            axios.get(`https://discord.com/api/guilds/${guild}/members/${user?.id}`,
+            axios.get(`https://discord.com/api/guilds/${newState.guild.id}/members/${user?.id}`,
                 {
                     headers: {
                         Authorization: `Bot ${client.token}`
                     }
                 }
             ).then((res:any) => {
-                let userDisplayAvatar: string = `https://cdn.discordapp.com/guilds/${_guild}/users/${user?.id}/avatars/${res.data.avatar}.webp?size=4096`  as string;
-
+                let userDisplayAvatar: string = `https://cdn.discordapp.com/guilds/${newState.guild.id}/users/${user?.id}/avatars/${res.data.avatar}.webp?size=2048`  as string;
                 if (oldState.channelId === null && newState.channelId !== null) {
                     if (!_channel) return;
                     if (_channel.type !== ChannelType.GuildText) return;
