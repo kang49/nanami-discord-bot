@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 export = (client: client) => {
     client.on('messageCreate', async (message) => {
         const userId: string = message.author.id as string
-        const userName: string = message.author.username as string;
+        const userDisplayName: string = message.member?.displayName as string;
         const userTag: string = message.author.discriminator as string;
         const guildId: string = message.guildId as string;
         const guildName: string = message.guild?.name as string;
@@ -43,7 +43,7 @@ export = (client: client) => {
                 await prisma.user.updateMany({
                     data: {
                         userId: userId,
-                        userName: userName,
+                        userName: userDisplayName,
                         userTag: userTag,
                         guildId: guildId,
                         guildName: guildName,
@@ -58,7 +58,7 @@ export = (client: client) => {
                 await prisma.user.create({
                     data: {
                         userId: userId,
-                        userName: userName,
+                        userName: userDisplayName,
                         userTag: userTag,
                         guildId: guildId,
                         guildName: guildName,
