@@ -183,7 +183,7 @@ export = {
                         
                         // Draw avatar image within the clipping path
                         ctx.drawImage(badgeImage, badgeX, badgeY, badgeSize, badgeSize);
-                    } else if (!userOption.user?.bot) {
+                    } else if (userOption.user?.bot) {
                         //Badge
                         // Load image
                         const badgeImage = await loadImage('assets/img/bot_icon.png');
