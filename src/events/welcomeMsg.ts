@@ -21,7 +21,7 @@ export = (client: client) => {
         const displayName: string = member.user.username;
         let discriminator: string = `#${ member.user.discriminator}`
         const memberCount = member.guild.memberCount;
-        let userAvatar = member.user.displayAvatarURL()?? ''
+        let userAvatar = member.user.displayAvatarURL({ size: 4096 }) ?? '';
         const userFlags = member.user.flags;
         const userPremium = member.premiumSince;
 

@@ -21,6 +21,16 @@ model guild {
   create_time DateTime @default(now())
 }
 
+model user {
+  id Int @id @default(autoincrement())
+  userId String?
+  userName String?
+  userTag String?
+  guildId String?
+  guildName String?
+  guildMsgCount Int?
+}
+
 model voiceChatClone {
   id Int @id @default(autoincrement())
   create_Vstate_id String?
