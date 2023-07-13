@@ -1,5 +1,7 @@
+import { Channel } from 'diagnostics_channel';
 import type client from '../index';
 import { PrismaClient } from '@prisma/client';
+import { TextChannel } from 'discord.js';
 const prisma = new PrismaClient();
 
 export = (client: client) => {
@@ -69,5 +71,44 @@ export = (client: client) => {
         } catch (e) {
             return;
         }
+    });
+
+
+    //Functions
+    client.on('messageCreate', async (message) => {
+        if (message.author.id === '1109721426279280660') return; //เช็คว่าเป็นบอทหรือไม่ กันการอ่านตัวเอง
+
+        //Anime Daily Image Send
+        const animeGirlImage_sql = await prisma.attachment.findFirst({
+            where: {
+                animeGirlImage_Check: false,
+            }
+        });
+        if (!animeGirlImage_sql) return; //กรณีไม่มีภาพที่ต้องส่ง
+        const animeGirlImageUrl: string = animeGirlImage_sql.animeGirlImage ?? '' as string;
+
+        const guild_sql = await prisma.guild.findMany({
+            where: {
+                animeGirlDaily: true,
+            }
+        })
+        for (let i = 0; i < guild_sql.length; i++) {
+            const animeGirlImage_channel_sql: string = guild_sql[i].animeGirlDaily_log_id as string;
+            const animeGirlImage_channel: TextChannel | null = client.channels.cache.get(animeGirlImage_channel_sql) as TextChannel | null;
+
+            if (!animeGirlImage_channel) {
+                console.error('Main channel not found.');
+                return;
+            }
+            animeGirlImage_channel.send(animeGirlImageUrl);
+        }
+        await prisma.attachment.update({
+            where: {
+                animeGirlImage: animeGirlImageUrl,
+            },
+            data: {
+                animeGirlImage_Check: true,
+            }
+        })
     });
 };
