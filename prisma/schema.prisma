@@ -14,10 +14,13 @@ model guild {
   id Int @id @default(autoincrement())
   log_id String?
   welcome_log_id String?
+  animeGirlDaily_log_id String?
+
   guild_id String? @unique
-  inout Boolean @default(true)
+  inout Boolean @default(false)
   welcomeMsg Boolean @default(false)
   privilege Boolean @default(false)
+  animeGirlDaily Boolean @default(false)
   create_time DateTime @default(now())
 }
 
@@ -79,5 +82,12 @@ model deleteMessage {
   messageContent String?
   messageAuthorId String?
   messageAuthorName String?
+  create_time DateTime @default(now())
+}
+
+model attachment {
+  id Int @id @default(autoincrement())
+  animeGirlImage String? @unique @db.VarChar(255)
+  animeGirlImage_Check Boolean? @default(false)
   create_time DateTime @default(now())
 }
