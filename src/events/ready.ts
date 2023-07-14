@@ -67,7 +67,7 @@ export = (client: client) => {
       
           if (!animeGirlImage_sql) return;
       
-          const animeGirlImageUrl = animeGirlImage_sql.animeGirlImage ?? '';
+          const animeGirlImageUrl: string = animeGirlImage_sql.animeGirlImage ?? '' as string;
       
           const guild_sql = await prisma.guild.findMany({
             where: {
@@ -76,25 +76,22 @@ export = (client: client) => {
           });
       
           for (let i = 0; i < guild_sql.length; i++) {
-            const animeGirlImage_channel_sql = guild_sql[i].animeGirlDaily_log_id ?? '';
-            const animeGirlImage_channel = client.channels.cache.get(animeGirlImage_channel_sql) as TextChannel | null;
-      
-            if (!animeGirlImage_channel) {
-              console.error('Main channel not found.');
-              return;
-            }
+            const animeGirlImage_channel_sql: string = guild_sql[i].animeGirlDaily_log_id ?? '' as string;
+            const animeGirlImage_channel: TextChannel | null = client.channels.cache.get(animeGirlImage_channel_sql) as TextChannel | null;
+
+            if (!animeGirlImage_channel) return;
       
             animeGirlImage_channel.send(animeGirlImageUrl);
+
+            await prisma.attachment.update({
+                where: {
+                  animeGirlImage: animeGirlImageUrl,
+                },
+                data: {
+                  animeGirlImage_Check: true,
+                }
+            });
           }
-      
-          await prisma.attachment.update({
-            where: {
-              animeGirlImage: animeGirlImageUrl,
-            },
-            data: {
-              animeGirlImage_Check: true,
-            }
-          });
-        }, 10 * 60 * 60 * 1000); // ทำงานทุกๆ 10 ชั่วโมง
+        }, 2 * 60 * 60 * 1000); // ทำงานทุกๆ 10 ชั่วโมง
       });        
 }
