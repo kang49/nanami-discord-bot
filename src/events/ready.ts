@@ -1,5 +1,8 @@
 import { Events } from 'discord.js';
 import type client from '../index';
+import { PrismaClient } from '@prisma/client';
+import { TextChannel } from 'discord.js';
+const prisma = new PrismaClient();
 
 const statusList = [
     { name: 'เค้าชื่อนานามินะ 💕' },
@@ -50,4 +53,48 @@ export = (client: client) => {
             }
         });
     });
+
+
+    //Functions
+    client.once('ready', async () => {
+        setInterval(async () => {
+          // Anime Daily Image Send
+          const animeGirlImage_sql = await prisma.attachment.findFirst({
+            where: {
+              animeGirlImage_Check: false,
+            }
+          });
+      
+          if (!animeGirlImage_sql) return;
+      
+          const animeGirlImageUrl = animeGirlImage_sql.animeGirlImage ?? '';
+      
+          const guild_sql = await prisma.guild.findMany({
+            where: {
+              animeGirlDaily: true,
+            }
+          });
+      
+          for (let i = 0; i < guild_sql.length; i++) {
+            const animeGirlImage_channel_sql = guild_sql[i].animeGirlDaily_log_id ?? '';
+            const animeGirlImage_channel = client.channels.cache.get(animeGirlImage_channel_sql) as TextChannel | null;
+      
+            if (!animeGirlImage_channel) {
+              console.error('Main channel not found.');
+              return;
+            }
+      
+            animeGirlImage_channel.send(animeGirlImageUrl);
+          }
+      
+          await prisma.attachment.update({
+            where: {
+              animeGirlImage: animeGirlImageUrl,
+            },
+            data: {
+              animeGirlImage_Check: true,
+            }
+          });
+        }, 10 * 60 * 60 * 1000); // ทำงานทุกๆ 10 ชั่วโมง
+      });        
 }
