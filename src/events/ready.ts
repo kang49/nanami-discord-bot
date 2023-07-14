@@ -57,41 +57,44 @@ export = (client: client) => {
 
     //Functions
     client.once('ready', async () => {
-        setInterval(async () => {
-          // Anime Daily Image Send
-          const animeGirlImage_sql = await prisma.attachment.findFirst({
-            where: {
-              animeGirlImage_Check: false,
-            }
-          });
-      
-          if (!animeGirlImage_sql) return;
-      
-          const animeGirlImageUrl: string = animeGirlImage_sql.animeGirlImage ?? '' as string;
-      
-          const guild_sql = await prisma.guild.findMany({
-            where: {
-              animeGirlDaily: true,
-            }
-          });
-      
-          for (let i = 0; i < guild_sql.length; i++) {
-            const animeGirlImage_channel_sql: string = guild_sql[i].animeGirlDaily_log_id ?? '' as string;
-            const animeGirlImage_channel: TextChannel | null = client.channels.cache.get(animeGirlImage_channel_sql) as TextChannel | null;
-
-            if (!animeGirlImage_channel) return;
-      
-            animeGirlImage_channel.send(animeGirlImageUrl);
-
-            await prisma.attachment.update({
-                where: {
-                  animeGirlImage: animeGirlImageUrl,
-                },
-                data: {
-                  animeGirlImage_Check: true,
-                }
-            });
+      async function animeGirlDaily_Send () {
+        const animeGirlImage_sql = await prisma.attachment.findFirst({
+          where: {
+            animeGirlImage_Check: false,
           }
-        }, 2 * 60 * 60 * 1000); // ทำงานทุกๆ 10 ชั่วโมง
+        });
+    
+        if (!animeGirlImage_sql) return;
+    
+        const animeGirlImageUrl: string = animeGirlImage_sql.animeGirlImage ?? '' as string;
+    
+        const guild_sql = await prisma.guild.findMany({
+          where: {
+            animeGirlDaily: true,
+          }
+        });
+    
+        for (let i = 0; i < guild_sql.length; i++) {
+          const animeGirlImage_channel_sql: string = guild_sql[i].animeGirlDaily_log_id ?? '' as string;
+          const animeGirlImage_channel: TextChannel | null = client.channels.cache.get(animeGirlImage_channel_sql) as TextChannel | null;
+
+          if (!animeGirlImage_channel) return;
+    
+          animeGirlImage_channel.send(animeGirlImageUrl);
+
+          await prisma.attachment.update({
+              where: {
+                animeGirlImage: animeGirlImageUrl,
+              },
+              data: {
+                animeGirlImage_Check: true,
+              }
+          });
+        }
+      }
+      animeGirlDaily_Send(); //First time run
+        setInterval(async () => {
+          animeGirlDaily_Send();
+        }, 2 * 60 * 60 * 1000); // ทำงานทุกๆ 2 ชั่วโมง
       });        
 }
