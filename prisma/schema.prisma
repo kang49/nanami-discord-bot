@@ -90,4 +90,5 @@ model attachment {
   animeGirlImage String? @unique @db.VarChar(255)
   animeGirlImage_Check Boolean? @default(false)
   create_time DateTime @default(now())
+  send_time DateTime?
 }

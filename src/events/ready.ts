@@ -8,7 +8,7 @@ const statusList = [
     { name: 'เค้าชื่อนานามินะ 💕' },
     { name: 'เธอว่างเล่นกับเค้ามั้ยคะ?' },
     { name: 'เธอทำไรอยู่เหรอ?' },
-    { name: 'ไอต้าวบ้าา 💓' },
+    { name: 'คิดถึงเธอจัง' },
     { name: 'ขอกอดเธอได้ไหมคะ 🥺' },
     { name: 'คืนนี้อย่าลืมฝันถึงเค้าบ้างนะ 💤' },
     { name: 'ใครจะน่ารักเท่าเธอ 💕' },
@@ -58,6 +58,27 @@ export = (client: client) => {
     //Functions
     client.once('ready', async () => {
       async function animeGirlDaily_Send () {
+        //Check latest send time is over 2hr
+        const latest_sendAnimeGirl_sql = await prisma.attachment.findFirst({
+          where: {
+            animeGirlImage_Check: true,
+            send_time: { not: null },
+          },
+          orderBy: {
+            send_time: "desc"
+          }
+        })
+        const latest_sendAnimeGirl: Date | null = latest_sendAnimeGirl_sql?.send_time as Date | null;
+        const limit_sendTime: number = 2 * 60 * 60 * 1000 as number;
+
+        if (latest_sendAnimeGirl) {
+          const currentTime = new Date();
+          const timeDifference = currentTime.getTime() - latest_sendAnimeGirl.getTime();
+
+          if (timeDifference < limit_sendTime) return;
+        }
+
+
         const animeGirlImage_sql = await prisma.attachment.findFirst({
           where: {
             animeGirlImage_Check: false,
@@ -88,13 +109,16 @@ export = (client: client) => {
               },
               data: {
                 animeGirlImage_Check: true,
+                send_time: new Date,
               }
           });
         }
       }
+
+
       animeGirlDaily_Send(); //First time run
-        setInterval(async () => {
-          animeGirlDaily_Send();
-        }, 2 * 60 * 60 * 1000); // ทำงานทุกๆ 2 ชั่วโมง
-      });        
+      setInterval( async () => {
+        animeGirlDaily_Send();
+      }, 2 * 60 * 60 * 1000); // ทำงานทุกๆ 2 ชั่วโมง
+    });
 }
