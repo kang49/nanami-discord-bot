@@ -19,7 +19,7 @@ export = (client: client) => {
                         channelId: auDelChannelId,
                     }
                 });
-                if (auDelMsg.length === 0) return; //กรณีไม่มี Msg ให้ลบ ให้ return ทิ้ง
+                if (auDelMsg.length === 0) continue; //กรณีไม่มี Msg ให้ลบ ให้ไปหา guild ถัดไป
                 for (let ii = 0; ii < auDelMsg.length; ii++) {
                     let msgCreateTime: Date = auDelMsg[ii].create_time  as Date;
                     let msgId: string = auDelMsg[ii].messageId as string;
@@ -31,7 +31,7 @@ export = (client: client) => {
                         timeDifference = timeDifference / 1000 //convert nanoSec to Sec
 
                         //check this msg is overLimit or not
-                        if (timeDifference < auDelTimeLimit) return;
+                        if (timeDifference < auDelTimeLimit) continue;
                         else {
                             try {
                                 // Delete the message using the message's ID
