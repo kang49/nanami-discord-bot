@@ -44,15 +44,6 @@ export = {
 
         const _setup = interaction.options.get('setup')?.value //ดึงค่าของ args
         if (_setup != "yes") {
-            await interaction.reply({
-                embeds: [
-                    {
-                        color: 0xE51F33,
-                        description: `🟥 **Cancle in-out report** ที่ห้องไอดี: **${interaction.channelId}** เรียบร้อยแล้วค่ะ`
-                    }
-                ]
-            })
-
             try {
                 await prisma.guild.upsert({
                     update: {
@@ -81,6 +72,14 @@ export = {
                     }
                 )
             }
+            await interaction.reply({
+                embeds: [
+                    {
+                        color: 0xE51F33,
+                        description: `🟥 **Cancle in-out report** ที่ห้องไอดี: **${interaction.channelId}** เรียบร้อยแล้วค่ะ`
+                    }
+                ]
+            })
             return;
         }
 

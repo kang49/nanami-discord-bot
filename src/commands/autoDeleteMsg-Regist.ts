@@ -6,15 +6,15 @@ import welcomeMsg from '../events/welcomeMsg';
 
 export = {
     data: {
-        name: "welcome-msg",
-        description: "Send welcome message to new member in server",
+        name: "auto-delete",
+        description: "Schedule auto-delete messages on your channel.",
         description_localizations: {
-            'th': 'ส่งข้อความต้อนรับให้กับสมาชิกใหม่'
+            'th': 'กำหนดเวลาลบข้อความอัตโนมัติในช่องของคุณ +- 1min'
         },
         options: [
             {
                 name: "setup",
-                description: "ตั้งค่าห้องนี้เป็นห้องเก็บ LOGS หรือไม่?",
+                description: "ตั้งค่าห้องนี้ให้ลบข้อความอัตโนมัติหรือไม่",
                 type: 3,
                 required: true,
                 choices: [
@@ -27,6 +27,11 @@ export = {
                         value: "cancel"
                     }
                 ]
+            },
+            {
+                name: "count-down",
+                description: "จะให้ลบเมื่อเวลาผ่านไปกี่วินาที?/Sec",
+                type: 10,
             }
         ]
     },
@@ -44,20 +49,14 @@ export = {
 
 
         const _setup = interaction.options.get('setup')?.value //ดึงค่าของ args
+        const deleteTimeSec = interaction.options.get('count-down')?.value as number || 0;
+
         if (_setup != "yes") {
             try {
-                await prisma.guild.upsert({
-                    update: {
-                        welcome_log_id: interaction.channelId,
-                        welcomeMsg: false
-                    },
+                await prisma.autoDeleteMsg.delete({
                     where: {
-                        guild_id: interaction.guildId ?? ""
+                        channelId: interaction.channelId
                     },
-                    create: {
-                        guild_id: interaction.guildId,
-                        welcome_log_id: interaction.channelId,
-                    }
                 })
             } catch {
                 return interaction.reply(
@@ -76,28 +75,44 @@ export = {
                 embeds: [
                     {
                         color: 0xE51F33,
-                        description: `🟥 **Cancle welcome message** ที่ห้องไอดี: **${interaction.channelId}** เรียบร้อยแล้วค่ะ`
+                        description: `🟥 **Cancle AutoDeleteMsg** ที่ห้องไอดี: **${interaction.channelId}** เรียบร้อยแล้วค่ะ`
                     }
                 ]
             })
             return;
         }
+
+        if (deleteTimeSec < 10) return interaction.reply(
+            {
+                embeds: [
+                    {
+                        color: 0xB6B6B6,
+                        title: `⚠️ **Error** ⚠️`,
+                        description: `สั่งให้ลบได้ขั้นต่ำคือ 10 วินาทีนะคะ`
+                    }
+                ],
+                ephemeral: true
+            }
+        );
         
 
         // เขียน db
         try{
-            await prisma.guild.upsert({
+            await prisma.autoDeleteMsg.upsert({
                 update: {
-                    welcome_log_id: interaction.channelId,
-                    welcomeMsg: true
+                    guildId: interaction.guildId,
+                    guildName: interaction.guild?.name,
+                    channelId: interaction.channelId,
+                    deleteLimit: deleteTimeSec,
                 },
                 where: {
-                    guild_id: interaction.guildId ?? ""
+                    channelId: interaction.channelId
                 },
                 create: {
-                    guild_id: interaction.guildId,
-                    welcome_log_id: interaction.channelId,
-                    welcomeMsg: true
+                    guildId: interaction.guildId,
+                    guildName: interaction.guild?.name,
+                    channelId: interaction.channelId,
+                    deleteLimit: deleteTimeSec,
                 }
             })
         } catch {
@@ -118,9 +133,7 @@ export = {
             embeds: [
                 {
                     color: 0x0099ff,
-                    description: `🟦 **Setup welcome message** ที่ห้องไอดี: **${interaction.channelId}** เรียบร้อยแล้วค่ะ
-                    
-                    ⚠️ **หมายเหตุ:** ถ้า Setup แล้วใช้ไม่ได้ให้ Setup ซ้ำอีกรอบนะคะ`
+                    description: `🟦 **Setup AutoDeleteMsg** ที่ห้องไอดี: **${interaction.channelId}** เรียบร้อยแล้วค่ะ`
                 }
             ]
         })
