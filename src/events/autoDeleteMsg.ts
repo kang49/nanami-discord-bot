@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 export = (client: client) => {
     client.once('ready', async () => {
+        let funcIsRuning: boolean = false as boolean;
         async function AutoDeleteMsg() {
             //check channel is set to autoDelete
             const auDelCh = await prisma.autoDeleteMsg.findMany()
@@ -30,7 +31,7 @@ export = (client: client) => {
 
                         timeDifference = timeDifference / 1000 //convert nanoSec to Sec
 
-                        //check this msg is overLimit or not
+                        // check this msg is overLimit or not
                         if (timeDifference < auDelTimeLimit) continue;
                         else {
                             try {
@@ -61,11 +62,15 @@ export = (client: client) => {
                     };
                 };
             };
+            return funcIsRuning = true;
         };
-
         AutoDeleteMsg(); //Frist time run
+
         setInterval( async () => {
-            AutoDeleteMsg();
-        }, 1 * 1 * 10 * 1000); // เช็คทุกๆ 10 วินาที
+            if (funcIsRuning === true) {
+                funcIsRuning = false
+                AutoDeleteMsg();
+            }
+        }, 1 * 1 * 1 * 1000); // เช็คทุกๆ 1 วินาที
     });
 }
