@@ -31,7 +31,7 @@ export = (client: client) => {
                 }
 
                 const latest_sendAnimeGirl: Date | null = latest_sendAnimeGirl_sql?.send_time as Date | null;
-                const limit_sendTime: number = 2 * 60 * 60 * 1000 as number; //กำหนดความถี่ที่จะส่ง
+                const limit_sendTime: number = 6 * 60 * 60 * 1000 as number; //กำหนดความถี่ที่จะส่ง
 
                 if (latest_sendAnimeGirl) {
                     const currentTime = new Date();
@@ -65,13 +65,15 @@ export = (client: client) => {
 
                     animeGirlImage_channel.send(animeGirlImageUrl);
 
+                    const send_time = new Date();
+                    send_time.setSeconds(0); // กำหนดเศษวินาทีให้เป็น 0 เพื่อ support delay ที่อาจเกิดขึ้นระหว่างส่ง
                     await prisma.attachment.update({
                         where: {
                             animeGirlImage: animeGirlImageUrl,
                         },
                         data: {
                             animeGirlImage_Check: true,
-                            send_time: new Date,
+                            send_time: send_time,
                         }
                     });
                 }
