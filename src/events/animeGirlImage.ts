@@ -15,7 +15,7 @@ export = (client: client) => {
                 console.error('Error pinging the database cancel AnimeImgUpdate');
             }
             try {
-                //Check latest send time is over 2hr
+                //Check latest send time is over 6hr
                 const latest_sendAnimeGirl_sql = await prisma.attachment.findFirst({
                     where: {
                         animeGirlImage_Check: true,

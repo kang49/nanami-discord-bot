@@ -15,6 +15,7 @@ export = (client: client) => {
         const userTag: string = interaction.user.discriminator
 
         const customId_list = customId.split(','); //[ 'creditor_..._transfering', 'userid' ]
+        if (customId_list[0] != 'creditor_approve_transfering' && customId_list[0] != 'creditor_reject_transfering') return; //ถ้าคำสั่งที่มาไม่เกี่ยวกัย DebPaid
         const debtorUserID: string = customId_list[1]
         const debtorUserName: string = customId_list[2]
         const debtorUserTag: string = customId_list[3]

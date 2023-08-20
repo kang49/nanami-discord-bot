@@ -88,6 +88,8 @@ model deleteMessage {
 model attachment {
   id Int @id @default(autoincrement())
   animeGirlImage String? @unique @db.VarChar(255)
+  animeGirlImage_Verify Boolean? @default(false)
+  sendVerify_id String?
   animeGirlImage_Check Boolean? @default(false)
   create_time DateTime @default(now())
   send_time DateTime?
