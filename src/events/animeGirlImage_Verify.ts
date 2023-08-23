@@ -1,7 +1,6 @@
 import type client from '../index';
 import { PrismaClient } from '@prisma/client';
 import { TextChannel } from 'discord.js';
-import animeGirlImage from './animeGirlImage';
 const prisma = new PrismaClient();
 
 export = (client: client) => {
@@ -71,7 +70,17 @@ export = (client: client) => {
 
         animeGirl_Verify(); //First time run
         setInterval(async () => {
+            const jobTime = new Date;
+            jobTime.setHours(15, 0, 0, 0); //set jobTime
+            let currentTime = new Date;
+            
+            // แปลงเวลาให้เป็นจำนวนวินาที
+            const jobTimeInSeconds = Math.floor(jobTime.getTime() / 1000);
+            const currentTimeInSeconds = Math.floor(currentTime.getTime() / 1000);
+
+            if (jobTimeInSeconds !== currentTimeInSeconds) return
+
             animeGirl_Verify();
-        }, 10 * 60 * 60 * 1000); // เช็คทุกๆ 10 ชั่วโมง
+        }, 1 * 1 * 1 * 1000); // เช็คทุกๆ 1 วินาที
     });
 }
