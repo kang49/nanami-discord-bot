@@ -71,7 +71,7 @@ export = (client: client) => {
         animeGirl_Verify(); //First time run
         setInterval(async () => {
             const jobTime = new Date;
-            jobTime.setHours(15, 0, 0, 0); //set jobTime
+            jobTime.setHours(8, 0, 0, 0); //set jobTime in utc time
             let currentTime = new Date;
             
             // แปลงเวลาให้เป็นจำนวนวินาที
