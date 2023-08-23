@@ -41,9 +41,12 @@ export = (client: client) => {
                     });
 
                     //Delete Attatchment in SQL
-                    await prisma.attachment.delete({
+                    await prisma.attachment.update({
                         where: {
                             id: animeGirlImage_id,
+                        },
+                        data: {
+                            animeGirlImage_Check: true
                         }
                     })
                 } catch (e) {
