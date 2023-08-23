@@ -3,7 +3,6 @@ const prisma = new PrismaClient();
 import type client from '../index';
 import type { CommandInteraction, GuildMember } from 'discord.js';
 const Discord = require('discord.js');
-import fs from 'fs';
 
 import { createCanvas, loadImage } from 'canvas';
 const axios = require('axios');

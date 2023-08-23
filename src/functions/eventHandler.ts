@@ -1,8 +1,7 @@
-import { readFileSync, readdirSync } from 'fs'
+import {readdirSync } from 'fs'
 import { join } from 'path'
 import type client from '../index'
 import { Collection } from 'discord.js'
-import type { ApplicationCommandDataResolvable } from 'discord.js'
 
 export = (client: client) => {
     client.commandArray = []

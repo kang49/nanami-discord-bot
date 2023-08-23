@@ -8,7 +8,6 @@ import generatePayload = require('promptpay-qr');
 import * as qr from 'qrcode';
 import * as fs from 'fs';
 import sharp from 'sharp';
-const axios = require('axios');
 
 export = {
     data: {

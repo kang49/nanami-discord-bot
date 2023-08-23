@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 import type client from '../index';
 import type { CommandInteraction } from 'discord.js';
-import { channel } from 'diagnostics_channel';
 
 export = {
     data: {

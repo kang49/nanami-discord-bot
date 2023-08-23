@@ -1,7 +1,5 @@
-import { Channel } from 'diagnostics_channel';
 import type client from '../index';
 import { PrismaClient } from '@prisma/client';
-import { TextChannel } from 'discord.js';
 const prisma = new PrismaClient();
 
 export = (client: client) => {

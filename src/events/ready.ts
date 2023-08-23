@@ -1,7 +1,6 @@
 import { Events } from 'discord.js';
 import type client from '../index';
 import { PrismaClient } from '@prisma/client';
-import { TextChannel } from 'discord.js';
 const prisma = new PrismaClient();
 
 const statusList = [

@@ -1,4 +1,4 @@
-import { Events, ChannelType, TextChannel } from 'discord.js';
+import { TextChannel } from 'discord.js';
 import type client from '../index';
 require('dotenv').config()
 

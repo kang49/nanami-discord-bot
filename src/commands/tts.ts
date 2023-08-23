@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 import type client from '../index';
 import type { CommandInteraction } from 'discord.js';
-const { getVoiceConnection, joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
 const Discord = require('discord.js');
 
 const fs = require('fs');
@@ -11,8 +11,6 @@ const { promisify } = require('util');
 const pipelineAsync = promisify(pipeline);
 const ffmpeg = require('ffmpeg-static');
 const axios = require('axios');
-
-const privilegeUserID: string = `${process.env.PRIVILEGE}` as string
 
 export = {
     data: {

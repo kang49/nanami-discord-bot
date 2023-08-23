@@ -1,4 +1,4 @@
-import { Events, ChannelType } from 'discord.js'
+import { ChannelType } from 'discord.js'
 import type client from '../index'
 
 import { PrismaClient } from '@prisma/client'

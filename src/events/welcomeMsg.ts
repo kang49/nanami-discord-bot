@@ -1,7 +1,6 @@
 import client from '../index';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-import fs from 'fs';
 const Discord = require('discord.js');
 import { ChannelType} from 'discord.js';
 
