@@ -6,10 +6,6 @@ const { joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@d
 const Discord = require('discord.js');
 
 const fs = require('fs');
-const { pipeline } = require('stream');
-const { promisify } = require('util');
-const pipelineAsync = promisify(pipeline);
-const ffmpeg = require('ffmpeg-static');
 const axios = require('axios');
 
 export = {
@@ -124,7 +120,11 @@ export = {
                 // Optional: Handle playback finished event
                 audioPlayer.on('idle', () => {
                     setTimeout(() => {
-                        connection.destroy();
+                        try {
+                            connection.destroy();
+                        } catch (e) {
+                            return console.log(e, 'TTS Destroy');
+                        }
                     }, 5 * 60 * 1000); // 5 minutes
 
                     // Delete the message
@@ -182,16 +182,15 @@ export = {
                 const botnoi_voice: string = botnoi_response.audio_url;
 
                 //Save tts to database
-                async function downloadAudio(botnoi_voice: string, outputPath: string) {
+                async function downloadAudio(botnoi_voice: string, localVoicePath: string) {
                     try {
                       const response = await axios.get(botnoi_voice, { responseType: 'arraybuffer' });
-                      fs.writeFileSync(outputPath, response.data);
+                      fs.writeFileSync(localVoicePath, response.data);
                     } catch (error) {
                       return;
                     }
-                  }
-                  const outputPath = `${process.env.PATH_}/nanami-discord-bot/assets/nanami_tts_data/${textMessage}.m4a`;
-                  downloadAudio(botnoi_voice, outputPath);
+                }
+                await downloadAudio(botnoi_voice, localVoicePath);
     
                 //Speak
                 //@ts-ignore
@@ -202,14 +201,18 @@ export = {
                     adapterCreator: voiceChannel.guild.voiceAdapterCreator,
                 });
                 const audioPlayer = createAudioPlayer();
-                const audioResource = createAudioResource(`${botnoi_voice}`);
+                const audioResource = createAudioResource(localVoicePath);
                 connection.subscribe(audioPlayer);
                 audioPlayer.play(audioResource);
     
                 // Optional: Handle playback finished event
                 audioPlayer.on('idle', () => {
                     setTimeout(() => {
-                        connection.destroy();
+                        try {
+                            connection.destroy();
+                        } catch (e) {
+                            return console.log(e, 'TTS Destroy');
+                        }
                     }, 5 * 60 * 1000); // 5 minutes
 
                     // Delete the message
@@ -287,7 +290,11 @@ export = {
                 // Optional: Handle playback finished event
                 audioPlayer.on('idle', () => {
                     setTimeout(() => {
-                        connection.destroy();
+                        try {
+                            connection.destroy();
+                        } catch (e) {
+                            return console.log(e, 'TTS Destroy');
+                        }
                     }, 5 * 60 * 1000); // 5 minutes
 
                     // Delete the message
