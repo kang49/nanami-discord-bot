@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 import type client from '../index';
 import type { CommandInteraction } from 'discord.js';
+import { checkPrimeSync } from 'crypto';
 const { joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
 const Discord = require('discord.js');
 
@@ -29,32 +30,19 @@ export = {
     },
     async execute(client: client, interaction: CommandInteraction) {
         if (!interaction.isCommand()) return; // Check if the interaction is a command
-
+        
+        var checkLocalTTS: boolean;
+        function CheckLocalTTS(localVoicePath: string) {
+            if (fs.existsSync(localVoicePath)) {
+                return checkLocalTTS = true;
+            } else return checkLocalTTS = false;
+        }
 
         const userId: string = interaction.member?.user.id as string
-        const guildId: string = interaction.guildId ?? ''
-        const channelId: string = interaction.channelId
         const textMessage: string = interaction.options.get('text')?.value as string //ดึงค่าของ text //message from user
         //Check user already in voice channel
         const guildMember = await interaction.guild?.members.fetch(userId);
-
-        //Get Privilege Guild
-        try {
-            var privilegeGuild = await prisma.guild.findMany({
-                where: {
-                    guild_id: guildId,
-                    privilege: true
-                }
-            });
-          
-            if (privilegeGuild.length === 0) {
-                privilegeGuild = [];
-            }
-        } catch (e) {
-            console.log(e);
-            privilegeGuild = [];
-        }
-          
+        const localVoicePath = `${process.env.PATH_}/nanami-discord-bot/assets/nanami_tts_data/${textMessage}.m4a`;
 
         // Check if the guild member is in a voice state
         const inVoiceState = guildMember?.voice.channel
@@ -81,6 +69,8 @@ export = {
             });
         }
 
+        CheckLocalTTS(localVoicePath);
+
         //Botnoi voice API
         const options = {
             method: 'POST',
@@ -102,8 +92,15 @@ export = {
             ephemeral: true // หากต้องการให้ข้อความนี้เป็นเพียงแค่ข้อความแชทที่เท่ากับผู้ใช้เท่านั้นที่เห็น (ephemeral)
         }).then(async (message) => {
             //Try local voice
-            const localVoicePath = `${process.env.PATH_}/nanami-discord-bot/assets/nanami_tts_data/${textMessage}.m4a`;
-            if (fs.existsSync(localVoicePath)) {
+            if (checkLocalTTS === undefined) {
+                console.log('waiting CheckLocalTTS Function response')
+                while (true) {
+                    if (checkLocalTTS != undefined) break;
+                    else continue;
+                }
+                console.log('CheckLocalTTS Function has responsed')
+            }
+            if (checkLocalTTS) {
                 //Speak
                 //@ts-ignore
                 const voiceChannel = interaction.member?.voice.channel;
@@ -116,7 +113,7 @@ export = {
                 const audioResource = createAudioResource(localVoicePath);
                 connection.subscribe(audioPlayer);
                 audioPlayer.play(audioResource);
-    
+
                 // Optional: Handle playback finished event
                 audioPlayer.on('idle', () => {
                     setTimeout(() => {
@@ -129,30 +126,6 @@ export = {
 
                     // Delete the message
                     message.delete().catch(console.error);
-                    if (privilegeGuild.length >= 1) {
-                        var attachment = new Discord.AttachmentBuilder(`${process.env.PATH_}/nanami-discord-bot/assets/nanami_tts_data/${textMessage}.m4a`);
-
-                        interaction.followUp({
-                            embeds: [
-                                {
-                                    author: {
-                                        name: `${interaction.user.username}`,
-                                        icon_url: `${interaction.user.avatarURL()}`,
-                                    },
-                                    color: 0x0099ff,
-                                    title: `สั่งให้ Nanami พูดว่า`,
-                                    description: `${textMessage}`,
-                                    timestamp: new Date().toISOString(),
-                                    footer: {
-                                        text: `Nanami /Speak | Local`
-                                    }
-                                },
-                            ],
-                            files: [attachment]
-                        });
-                        console.log(`Nanami TTS loaded local voice ${textMessage}.m4a`)
-                        return;
-                    }
                     interaction.followUp({
                         embeds: [
                             {
@@ -173,135 +146,99 @@ export = {
                     console.log(`Nanami TTS loaded local voice ${textMessage}.m4a`)
                     return;
                 });
-                return;
+            } else {
+                axios(options)
+                .then(async function (response: any) {
+                    const botnoi_response = response.data;
+                    const botnoi_voice: string = botnoi_response.audio_url;
+
+                    //Save tts to database
+                    async function downloadAudio(botnoi_voice: string, localVoicePath: string) {
+                        try {
+                        const response = await axios.get(botnoi_voice, { responseType: 'arraybuffer' });
+                        fs.writeFileSync(localVoicePath, response.data);
+                        } catch (error) {
+                        return;
+                        }
+                    }
+                    await downloadAudio(botnoi_voice, localVoicePath);
+        
+                    //Speak
+                    //@ts-ignore
+                    const voiceChannel = interaction.member?.voice.channel;
+                    const connection = await joinVoiceChannel({
+                        channelId: voiceChannel.id,
+                        guildId: voiceChannel.guild.id,
+                        adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+                    });
+                    const audioPlayer = createAudioPlayer();
+                    const audioResource = createAudioResource(localVoicePath);
+                    connection.subscribe(audioPlayer);
+                    audioPlayer.play(audioResource);
+        
+                    // Optional: Handle playback finished event
+                    audioPlayer.on('idle', () => {
+                        setTimeout(() => {
+                            try {
+                                connection.destroy();
+                            } catch (e) {
+                                return console.log(e, 'TTS Destroy');
+                            }
+                        }, 5 * 60 * 1000); // 5 minutes
+
+                        // Delete the message
+                        message.delete().catch(console.error);
+
+                        interaction.followUp({
+                            embeds: [
+                                {
+                                    author: {
+                                        name: `${interaction.user.username}`,
+                                        icon_url: `${interaction.user.avatarURL()}`,
+                                    },
+                                    color: 0x0099ff,
+                                    title: `สั่งให้ Nanami พูดว่า`,
+                                    description: `${textMessage}`,
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: `Nanami /Speak`
+                                    }
+                                },
+                            ]
+                        });
+                        return;
+                    });
+                })
+                .catch(async function (error: any) {
+                    //Speak
+                    //@ts-ignore
+                    const voiceChannel = interaction.member?.voice.channel;
+                    const connection = await joinVoiceChannel({
+                        channelId: voiceChannel.id,
+                        guildId: voiceChannel.guild.id,
+                        adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+                    });
+                    const audioPlayer = createAudioPlayer();
+                    const audioResource = createAudioResource('assets/voice/error.m4a');
+                    connection.subscribe(audioPlayer);
+                    audioPlayer.play(audioResource);
+        
+                    // Optional: Handle playback finished event
+                    audioPlayer.on('idle', () => {
+                        setTimeout(() => {
+                            try {
+                                connection.destroy();
+                            } catch (e) {
+                                return console.log(e, 'TTS Destroy');
+                            }
+                        }, 5 * 60 * 1000); // 5 minutes
+
+                        // Delete the message
+                        message.delete().catch(console.error);
+                    });
+                    return;
+                });
             }
-
-            axios(options)
-            .then(async function (response: any) {
-                const botnoi_response = response.data;
-                const botnoi_voice: string = botnoi_response.audio_url;
-
-                //Save tts to database
-                async function downloadAudio(botnoi_voice: string, localVoicePath: string) {
-                    try {
-                      const response = await axios.get(botnoi_voice, { responseType: 'arraybuffer' });
-                      fs.writeFileSync(localVoicePath, response.data);
-                    } catch (error) {
-                      return;
-                    }
-                }
-                await downloadAudio(botnoi_voice, localVoicePath);
-    
-                //Speak
-                //@ts-ignore
-                const voiceChannel = interaction.member?.voice.channel;
-                const connection = await joinVoiceChannel({
-                    channelId: voiceChannel.id,
-                    guildId: voiceChannel.guild.id,
-                    adapterCreator: voiceChannel.guild.voiceAdapterCreator,
-                });
-                const audioPlayer = createAudioPlayer();
-                const audioResource = createAudioResource(localVoicePath);
-                connection.subscribe(audioPlayer);
-                audioPlayer.play(audioResource);
-    
-                // Optional: Handle playback finished event
-                audioPlayer.on('idle', () => {
-                    setTimeout(() => {
-                        try {
-                            connection.destroy();
-                        } catch (e) {
-                            return console.log(e, 'TTS Destroy');
-                        }
-                    }, 5 * 60 * 1000); // 5 minutes
-
-                    // Delete the message
-                    message.delete().catch(console.error);
-                    if (privilegeGuild.length < 1) {
-                        interaction.followUp({
-                            embeds: [
-                                {
-                                    author: {
-                                        name: `${interaction.user.username}`,
-                                        icon_url: `${interaction.user.avatarURL()}`,
-                                    },
-                                    color: 0x0099ff,
-                                    title: `สั่งให้ Nanami พูดว่า`,
-                                    description: `${textMessage}`,
-                                    timestamp: new Date().toISOString(),
-                                    footer: {
-                                        text: `Nanami /Speak`
-                                    }
-                                },
-                            ],
-                        });
-                        return;
-                    } 
-                    else {
-                        var botnoi_voice_attachment = botnoi_voice
-                        interaction.followUp({
-                            embeds: [
-                                {
-                                    author: {
-                                        name: `${interaction.user.username}`,
-                                        icon_url: `${interaction.user.avatarURL()}`,
-                                    },
-                                    color: 0x0099ff,
-                                    title: `สั่งให้ Nanami พูดว่า`,
-                                    description: `${textMessage}`,
-                                    timestamp: new Date().toISOString(),
-                                    footer: {
-                                        text: `Nanami /Speak`
-                                    }
-                                },
-                            ],
-                            components: [
-                                {
-                                    type: 1,
-                                    components: [
-                                        {
-                                            type: 2,
-                                            style: 5,
-                                            label: 'โหลดเสียง ⬇',
-                                            url: `${botnoi_voice_attachment}`,
-                                        },
-                                    ],
-                                },
-                            ],
-                        });
-                        return;
-                    }
-                });
-            })
-            .catch(async function (error: any) {
-                //Speak
-                //@ts-ignore
-                const voiceChannel = interaction.member?.voice.channel;
-                const connection = await joinVoiceChannel({
-                    channelId: voiceChannel.id,
-                    guildId: voiceChannel.guild.id,
-                    adapterCreator: voiceChannel.guild.voiceAdapterCreator,
-                });
-                const audioPlayer = createAudioPlayer();
-                const audioResource = createAudioResource('assets/voice/error.m4a');
-                connection.subscribe(audioPlayer);
-                audioPlayer.play(audioResource);
-    
-                // Optional: Handle playback finished event
-                audioPlayer.on('idle', () => {
-                    setTimeout(() => {
-                        try {
-                            connection.destroy();
-                        } catch (e) {
-                            return console.log(e, 'TTS Destroy');
-                        }
-                    }, 5 * 60 * 1000); // 5 minutes
-
-                    // Delete the message
-                    message.delete().catch(console.error);
-                });
-                return;
-            });
         });
     },
 }

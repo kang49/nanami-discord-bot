@@ -19,7 +19,6 @@ model guild {
   guild_id String? @unique
   inout Boolean @default(false)
   welcomeMsg Boolean @default(false)
-  privilege Boolean @default(false)
   animeGirlDaily Boolean @default(false)
   create_time DateTime @default(now())
 }
