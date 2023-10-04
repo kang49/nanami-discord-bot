@@ -47,7 +47,18 @@ export = (client: client) => {
                                         type: 2,
                                         style: 4,
                                         label: 'ลบ',
-                                        custom_id: `animeGirl_Verify_Delete,${animeGirlImage_sql[i].id}`,
+                                        custom_id: `animeGirl_Verify,Delete,${animeGirlImage_sql[i].id}`,
+                                    },
+                                ],
+                            },
+                            {
+                                type: 1,
+                                components: [
+                                    {
+                                        type: 2,
+                                        style: 3,
+                                        label: 'แชร์ตอนนี้',
+                                        custom_id: `animeGirl_Verify,SendNow,${animeGirlImage_sql[i].id}`,
                                     },
                                 ],
                             },
