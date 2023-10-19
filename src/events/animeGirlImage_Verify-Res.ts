@@ -32,7 +32,7 @@ export = (client: client) => {
                     });
                     const animeGirlImageUrl: string = attachmentDel_sql?.animeGirlImage as string;
                     const animeGirlImage_Verify_Channel_Str: string = process.env.ANIME_IMAGE_VERIFY ?? '' as string;
-                    if (verify_option === 'delete') {
+                    if (verify_option === 'Delete') {
                         //@ts-ignore
                         await client.channels.cache.get(animeGirlImage_Verify_Channel_Str)?.messages.delete(attachmentDel_sql?.sendVerify_id);
                         
