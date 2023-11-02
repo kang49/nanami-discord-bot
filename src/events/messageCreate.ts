@@ -38,35 +38,47 @@ export = (client: client) => {
                         userId: userId,
                         guildId: guildId,
                     }
-                })
-                const userSQL_guildMsgCount: number = userSQL?.guildMsgCount as number
-                await prisma.user.updateMany({
-                    data: {
-                        userId: userId,
-                        userName: userDisplayName,
-                        userTag: userTag,
-                        guildId: guildId,
-                        guildName: guildName,
-                        guildMsgCount: userSQL_guildMsgCount + 1,
-                    },
-                    where: {
-                        userId: userId,
-                        guildId: guildId,
-                    },
                 });
-            } catch {
-                await prisma.user.create({
-                    data: {
-                        userId: userId,
-                        userName: userDisplayName,
-                        userTag: userTag,
-                        guildId: guildId,
-                        guildName: guildName,
-                        guildMsgCount: 1,
-                    },
-                })
+                //When no data
+                if (!userSQL) {
+                    try{
+                        await prisma.user.create({
+                            data: {
+                                userId: userId,
+                                userName: userDisplayName,
+                                userTag: userTag,
+                                guildId: guildId,
+                                guildName: guildName,
+                                guildMsgCount: 1,
+                            },
+                        });
+                    } catch (e) {
+                        console.error(e, 'messageCreate')
+                        return;
+                    }
+                } else {
+                    const userSQL_guildMsgCount: number = userSQL?.guildMsgCount as number
+                    await prisma.user.updateMany({
+                        data: {
+                            userId: userId,
+                            userName: userDisplayName,
+                            userTag: userTag,
+                            guildId: guildId,
+                            guildName: guildName,
+                            guildMsgCount: userSQL_guildMsgCount + 1,
+                        },
+                        where: {
+                            userId: userId,
+                            guildId: guildId,
+                        },
+                    });
+                }
+            } catch (e) {
+                console.error(e, 'messageCreate')
+                return;
             }
         } catch (e) {
+            console.error(e, 'messageCreate');
             return;
         }
     });

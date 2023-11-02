@@ -102,3 +102,10 @@ model autoDeleteMsg {
   deleteLimit Int?
   create_time DateTime @default(now())
 }
+
+model temporaryCaching {
+  id Int @id @default(autoincrement())
+  text String? @db.VarChar(255)
+  create_time DateTime @default(now())
+  use_time DateTime?
+}
