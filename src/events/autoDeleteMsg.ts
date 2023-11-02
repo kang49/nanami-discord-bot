@@ -22,6 +22,16 @@ export = (client: client) => {
               where: { messageId: msgId },
             });
           } catch (e) {
+
+            try{
+              await prisma.deleteMessage.deleteMany({
+                where: { messageId: msgId },
+              });
+            } catch (e) {
+              console.log(e, 'autoDelMsg');
+              continue;
+            }
+
             console.log(e, 'autoDelMsg');
             continue;
           }
