@@ -296,7 +296,7 @@ export = {
                                 },
                               });                           
                         } catch (e) {
-                            console.log(e)
+                            console.error(e, 'payments')
                             return;
                         }
                         return interaction.reply(
@@ -348,7 +348,7 @@ export = {
                             }
                         })
                     } catch (e) {
-                        console.log(e)
+                        console.error(e, 'payments')
                         return;
                     }
                     interaction.reply(
@@ -399,7 +399,7 @@ export = {
                                 },
                               });                           
                         } catch (e) {
-                            console.log(e)
+                            console.error(e, 'payments')
                             return;
                         }
                         interaction.reply(
@@ -435,7 +435,7 @@ export = {
                                 },
                             });                                                
                         } catch (e) {
-                            console.log(e)
+                            console.error(e, 'payments')
                             return;
                         }
                         interaction.reply(
@@ -599,7 +599,7 @@ export = {
                     }
                 }
             } catch (e) {
-                console.log(e);
+                console.error(e, 'payments');
                 return;
             }
         }
@@ -661,7 +661,7 @@ export = {
                     })
                 }
             } catch (e) {
-                console.log(e);
+                console.error(e, 'payments');
                 return;
             }
         }
@@ -724,7 +724,7 @@ export = {
                     })
                 }
             } catch (e) {
-                console.log(e);
+                console.error(e, 'payments');
                 return;
             }
         }

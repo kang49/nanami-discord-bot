@@ -28,11 +28,11 @@ export = (client: client) => {
                 where: { messageId: msgId },
               });
             } catch (e) {
-              console.log(e, 'autoDelMsg');
+              console.error(e, 'autoDelMsg');
               continue;
             }
 
-            console.log(e, 'autoDelMsg');
+            console.error(e, 'autoDelMsg');
             continue;
           }
         }

@@ -120,7 +120,7 @@ export = {
                         try {
                             connection.destroy();
                         } catch (e) {
-                            return console.log(e, 'TTS Destroy');
+                            return console.error(e, 'TTS Destroy');
                         }
                     }, 5 * 60 * 1000); // 5 minutes
 
@@ -157,8 +157,8 @@ export = {
                         try {
                         const response = await axios.get(botnoi_voice, { responseType: 'arraybuffer' });
                         fs.writeFileSync(localVoicePath, response.data);
-                        } catch (error) {
-                        return;
+                        } catch {
+                            return;
                         }
                     }
                     await downloadAudio(botnoi_voice, localVoicePath);
@@ -182,7 +182,7 @@ export = {
                             try {
                                 connection.destroy();
                             } catch (e) {
-                                return console.log(e, 'TTS Destroy');
+                                return console.error(e, 'TTS Destroy');
                             }
                         }, 5 * 60 * 1000); // 5 minutes
 
@@ -229,7 +229,7 @@ export = {
                             try {
                                 connection.destroy();
                             } catch (e) {
-                                return console.log(e, 'TTS Destroy');
+                                return console.error(e, 'TTS Destroy');
                             }
                         }, 5 * 60 * 1000); // 5 minutes
 

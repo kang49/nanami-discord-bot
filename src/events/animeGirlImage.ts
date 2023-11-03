@@ -78,6 +78,7 @@ export = (client: client) => {
                     });
                 }
             } catch (e) {
+                console.error(e, 'animeGirlImage')
                 return databaseOnline = false;
             }
         }

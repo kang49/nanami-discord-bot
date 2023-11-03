@@ -18,7 +18,7 @@ export = (client: client) => {
                     }
                 });
             } catch (e) {
-                return console.log(e, 'animeGirlImage_Verify');
+                return console.error(e, 'animeGirlImage_Verify');
             }
             //Send image is not verify to verify admin channel
             const animeGirlImage_Verify_Channel_Str: string = process.env.ANIME_IMAGE_VERIFY ?? '' as string;

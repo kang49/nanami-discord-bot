@@ -409,7 +409,7 @@ export = {
     //@ts-ignore
     var attachmentMessage = interaction.options.getAttachment('attachment').url
     //@ts-ignore
-    } catch (e) {
+    } catch {
       var attachmentMessage = ''
     }
     // console.log(mainLangChoices , targetLangChoices)
@@ -460,7 +460,7 @@ export = {
           },
         })
       }
-      catch (e) {
+      catch {
         return interaction.reply(
           {
             embeds: [
@@ -517,7 +517,7 @@ export = {
             targetChannel: targetChannelOption.id,
           }
         })
-      } catch (e) {
+      } catch {
         return interaction.reply(
           {
             embeds: [
@@ -592,7 +592,7 @@ export = {
         }
         else if (inputMessage === '') return;
       } catch (error) {
-        console.error(error);
+        console.error(error, 'translate');
       }
     }
   }

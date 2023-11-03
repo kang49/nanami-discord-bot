@@ -93,7 +93,7 @@ export = (client: client) => {
                             });
                         }
                     } catch {
-                        console.log(e, 'animeGirlImage_Verify_Res')
+                        console.error(e, 'animeGirlImage_Verify_Res')
                     }
                 }
             }

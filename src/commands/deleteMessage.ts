@@ -136,7 +136,7 @@ export = {
                             },
                         });
                     } catch {
-                        console.log(e, 'delMsg')
+                        console.error(e, 'delMsg')
                         continue;
                     }
                 }
