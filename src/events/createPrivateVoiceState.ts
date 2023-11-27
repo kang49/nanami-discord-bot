@@ -18,6 +18,7 @@ export = (client: client) => {
             // Get voiceChatClone data
             //@ts-ignore
             const voiceChatClones = await prisma.voiceChatClone.findMany(); // Get ทุก row ใน voiceChatClone table
+            if (!guild?.inout || !guild || !guild.guild_id || !guild.log_id) return;
 
 
             const _guild = await client.guilds.fetch(`${guild?.guild_id}`); // table

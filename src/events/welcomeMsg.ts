@@ -23,6 +23,8 @@ export = (client: client) => {
         let userAvatar = member.user.displayAvatarURL({ size: 4096 }) ?? '';
         const userFlags = member.user.flags;
         const userPremium = member.premiumSince;
+        
+        if (!guild_sql || !guild_sql.guild_id) return;
 
         const _guildId = await client.guilds.fetch(`${guild_sql?.guild_id}`)
         const _welcomeChannelId = await _guildId.channels.fetch(`${guild_sql?.welcome_log_id}`)

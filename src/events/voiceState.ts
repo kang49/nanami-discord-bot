@@ -16,7 +16,7 @@ export = (client: client) => {
                     inout: true
                 }
             })
-            if (!guild?.inout) return;
+            if (!guild?.inout || !guild || !guild.guild_id || !guild.log_id) return;
 
             const _guild = await client.guilds.fetch(`${guild?.guild_id}`)
             const _channel = await _guild.channels.fetch(`${guild?.log_id}`)
