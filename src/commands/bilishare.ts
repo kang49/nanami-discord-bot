@@ -1,6 +1,6 @@
 import type client from '../index';
 import type { CommandInteraction, GuildMember } from 'discord.js';
-const { MessageAttachment } = require('discord.js');
+const Discord = require('discord.js');
 
 export = {
     data: {
@@ -27,21 +27,17 @@ export = {
             content: 'รอสักครู่นะคะ หนูกำลังทำให้อยู่ค่ะ 💕',
             ephemeral: true // หากต้องการให้ข้อความนี้เป็นเพียงแค่ข้อความแชทที่เท่ากับผู้ใช้เท่านั้นที่เห็น (ephemeral)
         }).then(async () => {
-            await interaction.deferReply({
-                ephemeral: true // Set to true if you want the reply to be visible only to the user who triggered the command
-            });
-
             const biliLink = interaction.options.get('value')?.value as string;
 
             const response = await fetch(`https://bilishare.tensormik.com/api/api?biliLink=${biliLink}`, {
                 method: 'GET'
             });
-
+            
             if (response.status === 200) {
                 const responseData = await response.json(); // await added here
                 console.log(responseData)
                 const imageBuffer = Buffer.from(responseData.imageBase64, 'base64');
-                const attachment = new MessageAttachment(imageBuffer, 'image.png');
+                const attachment = new Discord.AttachmentBuilder(imageBuffer, { name: 'animeCard.png' });
 
                 await interaction.followUp({
                     files: [attachment],
