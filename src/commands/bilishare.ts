@@ -42,7 +42,24 @@ export = {
                 await interaction.followUp({
                     files: [attachment],
                 });
+            } else if (response.status === 400) {
+                const responseData = await response.json(); // await added here
+                
+                await interaction.followUp({
+                    content: `ขอโทษในความผิดพลาดด้วยนะคะ หนูหาข้อมูลอนิเมะเรื่องนั้นไม่เจอเลยค่ะ 🥺`,
+                    ephemeral: true
+                });
+                await interaction.followUp({
+                    embeds: [
+                        {
+                            color: 0xB6B6B6,
+                            title: `⚠️ **Error** ⚠️`,
+                            description: `${responseData.error}`
+                        }
+                    ],
+                    ephemeral: true
+                });
             }
         })
     }
-}
+} 
