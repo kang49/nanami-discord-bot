@@ -29,21 +29,26 @@ export = {
         }).then(async () => {
             const biliLink = interaction.options.get('value')?.value as string;
 
-            const response = await fetch(`https://bilishare.tensormik.com/api/api?biliLink=${biliLink}`, {
+            let response: any = await fetch(`https://bilishare.tensormik.com/api/api?biliLink=${biliLink}`, {
                 method: 'GET'
             });
             
             if (response.status === 200) {
-                const responseData = await response.json(); // await added here
+                let responseData = await response.json(); // await added here
+                response = null;
                 console.log(responseData)
-                const imageBuffer = Buffer.from(responseData.imageBase64, 'base64');
-                const attachment = new Discord.AttachmentBuilder(imageBuffer, { name: 'animeCard.png' });
+                let imageBuffer: any = Buffer.from(responseData.imageBase64, 'base64');
+                responseData = null;
+                let attachment = new Discord.AttachmentBuilder(imageBuffer, { name: 'animeCard.png' });
+                imageBuffer = null;
 
                 await interaction.followUp({
                     files: [attachment],
                 });
+                attachment = null;
             } else if (response.status === 400) {
-                const responseData = await response.json(); // await added here
+                let responseData = await response.json(); // await added here
+                response = null;
                 
                 await interaction.followUp({
                     content: `ขอโทษในความผิดพลาดด้วยนะคะ หนูหาข้อมูลอนิเมะเรื่องนั้นไม่เจอเลยค่ะ 🥺`,
@@ -59,6 +64,7 @@ export = {
                     ],
                     ephemeral: true
                 });
+                responseData = null;
             }
         })
     }
