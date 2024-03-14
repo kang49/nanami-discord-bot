@@ -71,7 +71,7 @@ export = {
                                 },
                                 {
                                     name: '⌘ **สถาปัตยกรรม**',
-                                    value: `\`${os.arch()}\``,
+                                    value: `\`${os.machine()}\``,
                                     inline: true
                                 },
                                 {
