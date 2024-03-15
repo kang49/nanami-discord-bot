@@ -4,7 +4,7 @@ import type client from '../index';
 import type { CommandInteraction, GuildMember } from 'discord.js';
 const Discord = require('discord.js');
 
-import { createCanvas, loadImage } from 'canvas';
+import { createCanvas, loadImage, registerFont } from 'canvas';
 const axios = require('axios');
 
 export = {
@@ -99,6 +99,10 @@ export = {
             ).then((res:any) => {
                 const {banner} = res.data;
 
+                // Register fonts
+                registerFont(`${process.env.PATH_}/nanami-discord-bot/assets/fonts/LINESeedSansTH_Bd.ttf`, { family: 'lineSeed_bold' });
+                registerFont(`${process.env.PATH_}/nanami-discord-bot/assets/fonts/LINESeedJP_TTF_Bd.ttf`, { family: 'lineSeed_bold' });
+
                 //Create Canvas
                 const canvas = createCanvas(800, 600);
                 const ctx = canvas.getContext('2d');
@@ -114,51 +118,51 @@ export = {
 
                     //Set text color and font
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                    ctx.font = 'bold 40px Arial';
+                    ctx.font = 'bold 40px lineSeed_bold';
                     // Draw text at the centered position
                     ctx.fillText(userFullName, 280, 130);
 
                     ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-                    ctx.font = 'bold 28.5px Arial';
+                    ctx.font = 'bold 28.5px lineSeed_bold';
                     ctx.fillText(roleNameList[0], 280, 160);
 
                     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-                    ctx.font = 'bold 30px Arial';
+                    ctx.font = 'bold 30px lineSeed_bold';
                     var TextWidth = ctx.measureText(guildName).width;
                     // Calculate X position for centering text
                     var centerX = (canvas.width - TextWidth) / 2;
                     ctx.fillText(guildName, centerX-150, 290);
 
                     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-                    ctx.font = 'bold 30px Arial';
+                    ctx.font = 'bold 30px lineSeed_bold';
                     var TextWidth = ctx.measureText(`ID: ${userId}`).width;
                     // Calculate X position for centering text
                     var centerX = (canvas.width - TextWidth) / 2;
                     ctx.fillText(`ID: ${userId}`, centerX-170, 350);
 
                     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-                    ctx.font = 'bold 30px Arial';
+                    ctx.font = 'bold 30px lineSeed_bold';
                     var TextWidth = ctx.measureText(`Join: ${userFormattedJoinDate}`).width;
                     // Calculate X position for centering text
                     var centerX = (canvas.width - TextWidth) / 2;
                     ctx.fillText(`Join: ${userFormattedJoinDate}`, centerX-145, 410);
 
                     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-                    ctx.font = 'bold 30px Arial';
+                    ctx.font = 'bold 30px lineSeed_bold';
                     var TextWidth = ctx.measureText(`Create: ${userFormattedCreareDate}`).width;
                     // Calculate X position for centering text
                     var centerX = (canvas.width - TextWidth) / 2;
                     ctx.fillText(`Create: ${userFormattedCreareDate}`, centerX-250, 470);
 
                     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-                    ctx.font = 'bold 50px Arial';
+                    ctx.font = 'bold 50px lineSeed_bold';
                     var TextWidth = ctx.measureText(`Level`).width;
                     // Calculate X position for centering text
                     var centerX = (canvas.width - TextWidth) / 2;
                     ctx.fillText(`Level`, centerX+295, 370);
 
                     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-                    ctx.font = 'bold 100px Arial';
+                    ctx.font = 'bold 100px lineSeed_bold';
                     var TextWidth = ctx.measureText(userLevel).width;
                     // Calculate X position for centering text
                     var centerX = (canvas.width - TextWidth) / 2;
