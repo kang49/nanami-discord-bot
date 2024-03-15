@@ -5,6 +5,7 @@ const Discord = require('discord.js');
 import { ChannelType} from 'discord.js';
 
 import { createCanvas, loadImage } from 'canvas';
+const { registerFont } = require('canvas');
 const axios = require('axios');
 
 export = (client: client) => {
@@ -48,6 +49,9 @@ export = (client: client) => {
             if (discriminator === '#0') {discriminator = ''};
             const displayName_prepare = `${displayName}${discriminator}`;
 
+            // Register fonts
+            registerFont(`${process.env.PATH_}/nanami-discord-bot/assets/fonts/LINESeedSansTH_Bd.ttf`, { family: 'lineSeed_bold' });
+            registerFont(`${process.env.PATH_}/nanami-discord-bot/assets/fonts/LINESeedJP_TTF_Bd.ttf`, { family: 'lineSeed_bold' });
             
             // Create canvas
             const canvas = createCanvas(800, 600);
@@ -64,14 +68,14 @@ export = (client: client) => {
 
                 // Set text color and font
                 ctx.fillStyle = '#3a9ff4';
-                ctx.font = 'bold 50px Arial';
+                ctx.font = '50px lineSeed_bold';
                 // Draw text at the centered position
                 ctx.fillText(displayName_prepare, 310, 180);
 
 
                 const memberCount_prepare = `เข้ามาเป็นคนที่: ${memberCount}`;
-                ctx.fillStyle = '#3a9ff4';
-                ctx.font = 'bold 25px Arial';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '25px lineSeed_bold';
                 // Draw text at the centered position
                 ctx.fillText(memberCount_prepare, 310, 220);
 
@@ -89,7 +93,7 @@ export = (client: client) => {
                     ctx.drawImage(badgeImage, badgeX, badgeY, badgeSize, badgeSize);
 
                     ctx.fillStyle = 'white';
-                    ctx.font = 'bold 25px Arial';
+                    ctx.font = '25px lineSeed_bold';
                     // Draw text at the centered position
                     ctx.fillText(`Discord Developer`, 520, 278);
                 } else if (userFlags?.has('PremiumEarlySupporter') || (userPremium) || (banner)) {
@@ -106,7 +110,7 @@ export = (client: client) => {
                     ctx.drawImage(badgeImage, badgeX, badgeY, badgeSize, badgeSize);
 
                     ctx.fillStyle = 'white';
-                    ctx.font = 'bold 25px Arial';
+                    ctx.font = '25px lineSeed_bold';
                     // Draw text at the centered position
                     ctx.fillText(`Nitro Supporter`, 550, 278);
                 } else if (member.user.bot) {
@@ -123,7 +127,7 @@ export = (client: client) => {
                     ctx.drawImage(badgeImage, badgeX, badgeY, badgeSize, badgeSize);
 
                     ctx.fillStyle = 'white';
-                    ctx.font = 'bold 25px Arial';
+                    ctx.font = '25px lineSeed_bold';
                     // Draw text at the centered position
                     ctx.fillText(`Discord`, 670, 278);
                 }
