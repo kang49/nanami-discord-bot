@@ -74,14 +74,14 @@ export = {
         //Botnoi voice API
         const options = {
             method: 'POST',
-            url: 'https://api-voice.botnoi.ai/api/service/generate_audio',
+            url: 'https://api-voice.botnoi.ai/openapi/v1/generate_audio',
             headers: {
                 'Botnoi-Token': process.env.BOTNOI_TOKEN,
                 'Content-Type': 'application/json',
             },
             data: {
                 text: textMessage,
-                speaker: '30',
+                speaker: '26',
                 volume: 1,
                 speed: 1,
                 type_media: 'm4a',
@@ -147,8 +147,7 @@ export = {
                     return;
                 });
             } else {
-                axios(options)
-                .then(async function (response: any) {
+                axios(options).then(async function (response: any) {
                     const botnoi_response = response.data;
                     const botnoi_voice: string = botnoi_response.audio_url;
 
