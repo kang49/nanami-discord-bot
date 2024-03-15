@@ -90,7 +90,7 @@ export = {
                                     inline: true
                                 },
                                 {
-                                    name: '🔄 **Restart Counter**',
+                                    name: '🔄 **Error Restart**',
                                     value: `\`${nanamiBotProcess.pm2_env.restart_time}\``,
                                     inline: true
                                 },
