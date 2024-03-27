@@ -16,6 +16,10 @@ export = {
         let hours = Math.floor(minutes / 60);
         let days = Math.floor(hours / 24);
 
+        seconds %= 60;
+        minutes %= 60;
+        hours %= 24;
+
         pm2.connect(function(err: string) {
             if (err) {
                 console.error(err);
